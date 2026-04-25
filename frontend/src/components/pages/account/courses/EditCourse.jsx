@@ -8,7 +8,8 @@ import { useEffect, useState } from 'react';
 
 function EditCourse() {
       const params = useParams();
-      const { register, handleSubmit, formState: { errors }, reset } = useForm({
+      const [loading, setLoading] = useState(false);
+      const { register, handleSubmit, formState: { errors }, setError, reset } = useForm({
             defaultValues: async () => {
                   await fetch(`${apiUrl}/courses/${params.id}`, {
                         method: "GET",
@@ -42,8 +43,9 @@ function EditCourse() {
       const [languages, setLanguages] = useState([]);
       const [levels, setLevels] = useState([]);
       const onSubmit = async (data) => {
-            await fetch(`${apiUrl}/courses`, {
-                  method: "POST",
+            setLoading(true);
+            await fetch(`${apiUrl}/courses/${params.id}`, {
+                  method: "PUT",
                   headers: {
                         'Content-Type': 'application/json',
                         'Accept': 'application/json',
@@ -53,12 +55,16 @@ function EditCourse() {
             })
                   .then(res => res.json())
                   .then(result => {
+                        setLoading(false);
                         console.log(result)
                         if (result.status == 200) {
-                              navigate('/account/courses/edit/' + result.data.id)
                               toast.success(result.message);
                         } else {
                               toast.error(result.message);
+                              const errors = result.errors;
+                              Object.keys(errors).forEach(field => {
+                                    setError(field, { message: errors[field][0] })
+                              })
                         }
                   })
       }
@@ -187,7 +193,9 @@ function EditCourse() {
                                                                                     {...register('cross_price')} />
                                                                               {errors.cross_price && <p className='invalid-feedback'>{errors.cross_price.message}</p>}
                                                                         </div>
-                                                                        <button className='btn btn-primary'>Update</button>
+                                                                        <button className='btn btn-primary' disabled={loading}>
+                                                                              {loading ? 'Updating...' : 'Update'}
+                                                                        </button>
                                                                   </div>
                                                             </div>
                                                       </form>
