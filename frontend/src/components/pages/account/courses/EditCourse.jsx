@@ -4,10 +4,14 @@ import UserSidebar from '../../../common/UserSidebar'
 import { useForm } from 'react-hook-form'
 import { apiUrl, token } from '../../../common/Config';
 import { toast } from 'react-hot-toast';
+import { useEffect, useState } from 'react';
 
 function EditCourse() {
       const { register, handleSubmit, formState: { errors } } = useForm()
       const navigate = useNavigate();
+      const [categories, setCategories] = useState([]);
+      const [languages, setLanguages] = useState([]);
+      const [levels, setLevels] = useState([]);
       const onSubmit = async (data) => {
             await fetch(`${apiUrl}/courses`, {
                   method: "POST",
@@ -29,6 +33,31 @@ function EditCourse() {
                         }
                   })
       }
+      const courseMetaData = async () => {
+            await fetch(`${apiUrl}/courses/meta-data`, {
+                  method: "GET",
+                  headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                  },
+            })
+                  .then(res => res.json())
+                  .then(result => {
+                        console.log(result)
+                        if (result.status == 200) {
+                              setCategories(result.categories);
+                              setLanguages(result.languages);
+                              setLevels(result.levels);
+                        } else {
+                              console.log("somthing went wrong")
+                        }
+                  })
+      }
+
+      useEffect(() => {
+            courseMetaData();
+      }, [])
       return (
             <Layout>
                   <section className='section-4'>
@@ -68,18 +97,27 @@ function EditCourse() {
                                                                               <label className="form-label" htmlFor="category">Category</label>
                                                                               <select className="form-select" id='category'>
                                                                                     <option value="">Select a category</option>
+                                                                                    {categories && categories.map(category => (
+                                                                                          <option value={category.id} key={category.id}>{category.name}</option>
+                                                                                    ))}
                                                                               </select>
                                                                         </div>
                                                                         <div className="mb-3">
                                                                               <label className="form-label" htmlFor="level">Level</label>
                                                                               <select className="form-select" id='level'>
                                                                                     <option value="">Select a Level</option>
+                                                                                    {levels && levels.map(level => (
+                                                                                          <option value={level.id} key={level.id}>{level.name}</option>
+                                                                                    ))}
                                                                               </select>
                                                                         </div>
                                                                         <div className="mb-3">
                                                                               <label className="form-label" htmlFor="language">Language</label>
                                                                               <select className="form-select" id='language'>
                                                                                     <option value="">Select a Language</option>
+                                                                                    {languages && languages.map(language => (
+                                                                                          <option value={language.id} key={language.id}>{language.name}</option>
+                                                                                    ))}
                                                                               </select>
                                                                         </div>
                                                                         <div className="mb-3">
