@@ -22,7 +22,6 @@ class CourseController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'title' => 'required|string|min:3|max:255',
-            // Add other validation rules as needed
         ]);
 
         if ($validator->fails()) {
@@ -71,6 +70,48 @@ class CourseController extends Controller
             'categories' => $categories,
             'levels' => $levels,
             'languages' => $languages
+        ], 200);
+    }
+
+    // This method will update course basic data
+    public function update($id, Request $request)
+    {
+        $course = Course::find($id);
+
+        if ($course == null) {
+            return response()->json([
+                'status' => 404,
+                'message' => 'Course not found'
+            ], 404);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'title' => 'required|string|min:3|max:255',
+            'category' => 'required',
+            'level' => 'required',
+            'language' => 'required',
+            'sell_price' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 400,
+                'errors' => $validator->errors()
+            ], 400);
+        }
+        $course->title = $request->title;
+        $course->category_id = $request->category;
+        $course->level_id = $request->level;
+        $course->language_id = $request->language;
+        $course->price = $request->sell_price;
+        $course->cross_price = $request->cross_price;
+        $course->description = $request->description;
+        $course->save();
+
+        return response()->json([
+            'status' => 200,
+            'data' => $course,
+            'message' => 'Course updated successfully'
         ], 200);
     }
 }

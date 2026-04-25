@@ -24,11 +24,11 @@ function EditCourse() {
                               if (result.status == 200) {
                                     reset({
                                           title: result.data.title,
-                                          category: result.data.title,
-                                          level: result.data.level,
-                                          language: result.data.language,
+                                          category: result.data.category_id,
+                                          level: result.data.level_id,
+                                          language: result.data.language_id,
                                           description: result.data.description,
-                                          sell_price: result.data.sell_price,
+                                          sell_price: result.data.price,
                                           cross_price: result.data.cross_price,
                                     })
                               } else {
