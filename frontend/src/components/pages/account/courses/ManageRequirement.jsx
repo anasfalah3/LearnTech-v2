@@ -7,15 +7,48 @@ import { MdDragIndicator } from "react-icons/md";
 import { BsPencilSquare } from "react-icons/bs";
 import { FaTrashAlt } from "react-icons/fa";
 import UpdateRequirement from "./UpdateRequirement";
+import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 
 function ManageRequirement() {
       const [loading, setLoading] = useState(false);
       const [requirements, setRequirements] = useState([]);
       const [requirementData, setRequirementData] = useState([]);
+      const [showRequirement, setShowRequirement] = useState(false);
       const { register, handleSubmit, formState: { errors }, reset } = useForm();
       const params = useParams();
 
-      const [showRequirement, setShowRequirement] = useState(false);
+      const handleDragEnd = (result) => {
+            if (!result.destination) return;
+
+            const reorderedItems = Array.from(requirements);
+            const [movedItem] = reorderedItems.splice(result.source.index, 1);
+            reorderedItems.splice(result.destination.index, 0, movedItem);
+
+            setRequirements(reorderedItems);
+            saveOrder(reorderedItems);
+      };
+
+      const saveOrder = async (updatedRequirements) => {
+            await fetch(`${apiUrl}/sort-requirements`, {
+                  method: "POST",
+                  headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                  },
+                  body: JSON.stringify({ requirements: updatedRequirements })
+            })
+                  .then(res => res.json())
+                  .then(result => {
+                        console.log(result)
+                        if (result.status == 200) {
+                              toast.success(result.message);
+                        } else {
+                              console.log("somthing went wrong")
+                        }
+                  })
+      }
+
       const handleClose = () => setShowRequirement(false);
       const handleShow = (requirement) => {
             setShowRequirement(true);
@@ -119,30 +152,48 @@ function ManageRequirement() {
                                           {loading ? 'Saving...' : 'Save'}
                                     </button>
                               </form>
-                              {
-                                    requirements && requirements.map(requirement => {
-                                          return (
-                                                <div key={`requirement-${requirement.id}`} className="card shadow mb-2">
-                                                      <div className="card-body p-2 d-flex">
-                                                            <div>
-                                                                  <MdDragIndicator />
-                                                            </div>
-                                                            <div className="d-flex justify-content-between w-100">
-                                                                  <div className="ps-2">{requirement.text}</div>
-                                                                  <div className='d-flex'>
-                                                                        <Link onClick={() => handleShow(requirement)} className="text-primary me-1">
-                                                                              <BsPencilSquare />
-                                                                        </Link>
-                                                                        <Link onClick={() => deleteRequirement(requirement.id)} className="text-danger">
-                                                                              <FaTrashAlt />
-                                                                        </Link>
-                                                                  </div>
-                                                            </div>
-                                                      </div>
+
+                              <DragDropContext onDragEnd={handleDragEnd} >
+                                    <Droppable droppableId="list">
+                                          {(provided) => (
+                                                <div {...provided.droppableProps} ref={provided.innerRef} className="space-y-2">
+                                                      {
+                                                            requirements.map((requirement, index) => (
+                                                                  <Draggable key={requirement.id} draggableId={`${requirement.id}`} index={index}>
+
+                                                                        {(provided) => (
+                                                                              <div
+                                                                                    ref={provided.innerRef}
+                                                                                    {...provided.draggableProps}
+                                                                                    {...provided.dragHandleProps}
+                                                                                    className="mt-2 border bg-white shadow-lg  rounded"
+                                                                              >
+
+                                                                                    <div className="card-body p-2 d-flex">
+                                                                                          <div>
+                                                                                                <MdDragIndicator />
+                                                                                          </div>
+                                                                                          <div className="d-flex justify-content-between w-100">
+                                                                                                <div className="ps-2">{requirement.text}</div>
+                                                                                                <div className='d-flex'>
+                                                                                                      <Link onClick={() => handleShow(requirement)} className="text-primary me-1">
+                                                                                                            <BsPencilSquare />
+                                                                                                      </Link>
+                                                                                                      <Link onClick={() => deleteRequirement(requirement.id)} className="text-danger">
+                                                                                                            <FaTrashAlt />
+                                                                                                      </Link>
+                                                                                                </div>
+                                                                                          </div>
+                                                                                    </div>
+                                                                              </div>
+                                                                        )}
+                                                                  </Draggable>
+                                                            ))}
+                                                      {provided.placeholder}
                                                 </div>
-                                          )
-                                    })
-                              }
+                                          )}
+                                    </Droppable>
+                              </DragDropContext>
 
                         </div>
                   </div>
