@@ -6,6 +6,7 @@ import { apiUrl, token } from '../../../common/Config';
 import { toast } from 'react-hot-toast';
 import { useEffect, useState } from 'react';
 import ManageOutcome from './ManageOutcome';
+import ManageRequirement from './ManageRequirement';
 
 function EditCourse() {
       const params = useParams();
@@ -203,6 +204,7 @@ function EditCourse() {
                                                 </div>
                                                 <div className="col-md-5">
                                                       <ManageOutcome />
+                                                      <ManageRequirement />
                                                 </div>
 
 
