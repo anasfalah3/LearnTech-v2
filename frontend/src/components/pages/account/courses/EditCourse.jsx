@@ -8,6 +8,7 @@ import { useEffect, useState } from 'react';
 import ManageOutcome from './ManageOutcome';
 import ManageRequirement from './ManageRequirement';
 import EditCover from './EditCover';
+import ManageChapter from './ManageChapter';
 
 function EditCourse() {
       const params = useParams();
@@ -203,6 +204,8 @@ function EditCourse() {
                                                                   </div>
                                                             </div>
                                                       </form>
+
+                                                      <ManageChapter course={course} params={params} />
                                                 </div>
                                                 <div className="col-md-5">
                                                       <ManageOutcome />

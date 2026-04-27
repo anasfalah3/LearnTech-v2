@@ -36,7 +36,7 @@ class ChapterController extends Controller
 
         $chapter = new Chapter();
         $chapter->course_id = $request->course_id;
-        $chapter->text = $request->chapter;
+        $chapter->title = $request->chapter;
         $chapter->sort_order = 1000;
         $chapter->save();
 
@@ -68,7 +68,7 @@ class ChapterController extends Controller
             ], 400);
         }
 
-        $chapter->text = $request->chapter;
+        $chapter->title = $request->chapter;
         $chapter->save();
 
         return response()->json([
