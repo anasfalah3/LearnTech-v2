@@ -70,6 +70,28 @@ function ManageChapter({ course, params }) {
                         }
                   })
       }
+      const deleteChapter = async (id) => {
+            if (confirm("Are you sure you want to delete this chapter?")) {
+                  await fetch(`${apiUrl}/chapters/${id}`, {
+                        method: "DELETE",
+                        headers: {
+                              'Content-Type': 'application/json',
+                              'Accept': 'application/json',
+                              'Authorization': `Bearer ${token}`
+                        },
+                  })
+                        .then(res => res.json())
+                        .then(result => {
+                              console.log(result)
+                              if (result.status == 200) {
+                                    setChapters({ type: "DELETE_CHAPTER", payload: id });
+                                    toast.success(result.message);
+                              } else {
+                                    console.log("somthing went wrong")
+                              }
+                        })
+            }
+      }
 
       useEffect(() => {
             if (course.chapters) {
@@ -106,7 +128,7 @@ function ManageChapter({ course, params }) {
                                                             <Accordion.Header>{chapter.title}</Accordion.Header>
                                                             <Accordion.Body>
                                                                   <div className="d-flex">
-                                                                        <button className="btn btn-danger btn-sm">Delete Chapter</button>
+                                                                        <button className="btn btn-danger btn-sm" onClick={() => deleteChapter(chapter.id)}>Delete Chapter</button>
                                                                         <button className="btn btn-primary btn-sm ms-2" onClick={() => handleShow(chapter)}>Update Chapter</button>
                                                                   </div>
                                                             </Accordion.Body>
