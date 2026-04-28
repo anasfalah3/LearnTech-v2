@@ -3,12 +3,22 @@ import { useForm } from 'react-hook-form';
 import { apiUrl, token } from '../../../common/Config';
 import toast from "react-hot-toast";
 import Accordion from 'react-bootstrap/Accordion';
+import UpdateChapter from './UpdateChapter';
 
 
 
 function ManageChapter({ course, params }) {
       const [loading, setLoading] = useState(false);
       const { register, handleSubmit, formState: { errors }, reset } = useForm();
+
+      const [showChapter, setShowChapter] = useState(false);
+      const [chapterData, setChapterData] = useState();
+
+      const handleClose = () => setShowChapter(false);
+      const handleShow = (chapter) => {
+            setShowChapter(true);
+            setChapterData(chapter);
+      }
 
       const chapterReducer = (state, action) => {
             switch (action.type) {
@@ -21,6 +31,7 @@ function ManageChapter({ course, params }) {
                               if (chapter.id === action.payload.id) {
                                     return action.payload;
                               }
+                              return chapter
                         });
                   case "DELETE_CHAPTER":
                         return state.filter(chapter => chapter.id != action.payload);
@@ -91,10 +102,13 @@ function ManageChapter({ course, params }) {
                                     {
                                           chapters.map((chapter, index) => {
                                                 return (
-                                                      <Accordion.Item eventKey={index} key={chapter.id}>
+                                                      <Accordion.Item eventKey={index} key={index}>
                                                             <Accordion.Header>{chapter.title}</Accordion.Header>
                                                             <Accordion.Body>
-
+                                                                  <div className="d-flex">
+                                                                        <button className="btn btn-danger btn-sm">Delete Chapter</button>
+                                                                        <button className="btn btn-primary btn-sm ms-2" onClick={() => handleShow(chapter)}>Update Chapter</button>
+                                                                  </div>
                                                             </Accordion.Body>
                                                       </Accordion.Item>
                                                 )
@@ -103,6 +117,12 @@ function ManageChapter({ course, params }) {
                               </Accordion>
                         </div>
                   </div>
+                  <UpdateChapter
+                        chapterData={chapterData}
+                        showChapter={showChapter}
+                        handleClose={handleClose}
+                        setChapters={setChapters}
+                  />
             </>
       )
 }
