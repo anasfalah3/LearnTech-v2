@@ -6,12 +6,13 @@ import { useForm } from "react-hook-form"
 import { apiUrl, token } from "../../../common/Config"
 import JoditEditor from 'jodit-react';
 import toast from "react-hot-toast"
+import LessonVideo from "./LessonVideo"
 
 function EditLesson({ placeholder }) {
       const [loading, setLoading] = useState(false);
-      const { register, handleSubmit, formState: { errors }, setError, reset } = useForm()
+      const { register, handleSubmit, formState: { errors }, reset } = useForm()
       const [chapters, setChapters] = useState([]);
-      const [lesson, setLesson] = useState(null);
+      const [lesson, setLesson] = useState([]);
       const params = useParams()
 
       const editor = useRef(null);
@@ -106,7 +107,8 @@ function EditLesson({ placeholder }) {
                               <div className='row'>
                                     <div className='col-md-12 mt-5 mb-3'>
                                           <div className='d-flex justify-content-between'>
-                                                <h2 className='h4 mb-0 pb-0'>Dashboard</h2>
+                                                <h2 className='h4 mb-0 pb-0'>Edit Lesson</h2>
+                                                <Link className="btn btn-primary" to={`/account/courses/edit/${params.courseId}`}>Back to Course</Link>
                                           </div>
                                     </div>
                                     <div className='col-lg-3 account-sidebar'>
@@ -114,7 +116,6 @@ function EditLesson({ placeholder }) {
                                     </div>
                                     <div className='col-lg-9'>
                                           <div className='row'>
-
                                                 <div className="col-md-8">
                                                       <form onSubmit={handleSubmit(onSubmit)}>
                                                             <div className="card border-0 shadow-lg">
@@ -181,9 +182,14 @@ function EditLesson({ placeholder }) {
                                                       </form>
                                                 </div>
 
+                                                <div className="col-md-4">
+                                                      <LessonVideo lesson={lesson} />
+                                                </div>
+
                                           </div>
 
                                     </div>
+
                               </div>
                         </div>
                   </section>

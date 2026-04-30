@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FilePond, registerPlugin } from 'react-filepond'
 import 'filepond/dist/filepond.min.css'
 import FilePondPluginImageExifOrientation from 'filepond-plugin-image-exif-orientation'
@@ -8,20 +8,26 @@ import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css'
 import { apiUrl, token } from '../../../common/Config';
 import toast from 'react-hot-toast';
 registerPlugin(FilePondPluginImageExifOrientation, FilePondPluginImagePreview, FilePondPluginFileValidateType)
+import ReactPlayer from "react-player";
 
-
-function EditCover({ course, setCourse }) {
+function LessonVideo({ lesson }) {
       const [files, setFiles] = useState([]);
+      const [videoUrl, setVideoUrl] = useState()
 
+      useEffect(() => {
+            if (lesson) {
+                  setVideoUrl(lesson.video_url)
+            }
+      }, [lesson])
       return (
             <>
                   <div className="card shadow-lg border-0 mt-4">
                         <div className="card-body p-4">
                               <div className="d-flex">
-                                    <h4 className="h5 border-bottom pb-3 mb-3">Cover Image</h4>
+                                    <h4 className="h5 border-bottom pb-3 mb-3">Lesson Video</h4>
                               </div>
                               <FilePond
-                                    acceptedFileTypes={['image/jpeg', 'image/jpg', 'image/png']}
+                                    acceptedFileTypes={['video/mp4']}
                                     credits={false}
                                     files={files}
                                     onupdatefiles={setFiles}
@@ -29,7 +35,7 @@ function EditCover({ course, setCourse }) {
                                     maxFiles={1}
                                     server={{
                                           process: {
-                                                url: `${apiUrl}/courses/save-course-image/${course.id}`,
+                                                url: `${apiUrl}/courses/save-lesson-video/${lesson.id}`,
                                                 method: 'POST',
                                                 headers: {
                                                       'Authorization': `Bearer ${token}`
@@ -37,8 +43,7 @@ function EditCover({ course, setCourse }) {
                                                 onload: (response) => {
                                                       response = JSON.parse(response);
                                                       toast.success(response.message);
-                                                      const updateCourseData = { ...course, cover_image_small: response.data.cover_image_small };
-                                                      setCourse(updateCourseData)
+                                                      setVideoUrl(response.data.video_url);
                                                       setFiles([]);
                                                 },
                                                 onerror: (errors) => {
@@ -46,14 +51,23 @@ function EditCover({ course, setCourse }) {
                                                 },
                                           },
                                     }}
-                                    name="image"
+                                    name="video"
                                     labelIdle='Drag & Drop your files or <span class="filepond--label-action">Browse</span>'
                               />
-                              {course.course_small_image && <img src={course.course_small_image} alt="Cover" className="w-100 rounded" />}
+                              {
+                                    videoUrl &&
+                                    <ReactPlayer
+                                          width="100%"
+                                          height="100%"
+                                          src={videoUrl}
+                                          controls
+                                    />
+                              }
+
                         </div>
                   </div>
             </>
       )
 }
 
-export default EditCover
+export default LessonVideo
