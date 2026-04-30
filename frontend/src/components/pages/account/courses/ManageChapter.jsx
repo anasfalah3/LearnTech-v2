@@ -169,7 +169,7 @@ function ManageChapter({ course, params }) {
                                                                                                                   }
 
 
-                                                                                                                  <Link to="#" className='ms-2'><BsPencilSquare size={14} /></Link>
+                                                                                                                  <Link to={`/account/courses/edit-lesson/${lesson.id}/${course.id}`} className='ms-2'><BsPencilSquare size={14} /></Link>
                                                                                                                   <Link to="#" className='ms-2 text-danger'><FaTrashAlt size={14} /></Link>
                                                                                                             </div>
                                                                                                       </div>

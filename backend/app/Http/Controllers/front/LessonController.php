@@ -37,6 +37,23 @@ class LessonController extends Controller
             'message' => 'Lesson added successfully',
         ], 200);
     }
+    // This Method will fetch lesson data
+    public function show($id)
+    {
+        $lesson = Lesson::find($id);
+        if ($lesson == null) {
+            return response()->json([
+                'status' => '404',
+                'message' => 'Lesson not found',
+            ], 404);
+        }
+
+        return response()->json([
+            'status' => '200',
+            'data' => $lesson,
+        ], 200);
+    }
+    // This Method will update a lesson
     public function update($id, Request $request)
     {
         $lesson = Lesson::find($id);
@@ -73,7 +90,7 @@ class LessonController extends Controller
             'message' => 'Lesson updated successfully',
         ], 200);
     }
-
+    // This Method will delete a lesson
     public function destroy($id)
     {
         $lesson = Lesson::find($id);
