@@ -5,7 +5,13 @@ function EditCourse({ course }) {
             <div className="col-md-4">
                   <div className='card border-0'>
                         <div className='card-img-top'>
-                              <img src={`https://placehold.co/600x350?text=Web+Development`} alt="" className='img-fluid' />
+                              {
+                                    course.course_small_image && <img src={course.course_small_image} alt="" className='img-fluid' />
+                              }
+                              {
+                                    course.course_small_image == '' && <img src={`https://placehold.co/600x350?text=${course.title}`} alt="" className='img-fluid' />
+                              }
+
                         </div>
                         <div className='card-body'>
                               <div className="card-title ">
