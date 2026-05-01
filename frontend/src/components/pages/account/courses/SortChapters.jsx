@@ -6,7 +6,7 @@ import toast from 'react-hot-toast';
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 
 
-function SortChapters({ showChapterSortModal, handleCloseChapterSortModal, course, setChapters }) {
+function SortChapters({ showChapterSortModal, handleCloseChapterSortModal, course, setChapters, chapters }) {
       const [chaptersData, setChaptersData] = useState([]);
       const handleDragEnd = (result) => {
             if (!result.destination) return;
@@ -40,10 +40,10 @@ function SortChapters({ showChapterSortModal, handleCloseChapterSortModal, cours
                   })
       }
       useEffect(() => {
-            if (course) {
-                  setChaptersData(course.chapters);
+            if (chapters) {
+                  setChaptersData(chapters);
             }
-      }, [course])
+      }, [chapters])
       return (
             <>
                   <Modal size='lg' show={showChapterSortModal} onHide={handleCloseChapterSortModal}>

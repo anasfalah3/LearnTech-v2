@@ -250,6 +250,7 @@ function ManageChapter({ course, params }) {
                         showLessonModal={showLessonModal}
                         handleCloseLessonModal={handleCloseLessonModal}
                         course={course}
+                        chapters={chapters}
                   />
                   <LessonsSort
                         showLessonSortModal={showLessonSortModal}
@@ -262,6 +263,7 @@ function ManageChapter({ course, params }) {
                         handleCloseChapterSortModal={handleCloseChapterSortModal}
                         course={course}
                         setChapters={setChapters}
+                        chapters={chapters}
                   />
             </>
       )
