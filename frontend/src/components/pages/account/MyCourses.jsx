@@ -2,8 +2,34 @@ import { Link } from "react-router-dom"
 import Layout from "../../common/Layout"
 import UserSidebar from "../../common/UserSidebar"
 import EditCourse from "../../common/EditCourse"
+import { apiUrl, token } from "../../common/Config"
+import { useEffect, useState } from "react"
 
 function MyCourses() {
+      const [courses, setCourses] = useState([]);
+      const fetchCorses = async () => {
+            await fetch(`${apiUrl}/my-courses`, {
+                  method: "GET",
+                  headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                  },
+            })
+                  .then(res => res.json())
+                  .then(result => {
+                        console.log(result)
+                        if (result.status == 200) {
+                              setCourses(result.courses);
+                        } else {
+                              console.log("somthing went wrong")
+                        }
+                  })
+      }
+
+      useEffect(() => {
+            fetchCorses();
+      }, [])
       return (
             <Layout>
                   <section className='section-4'>
@@ -20,9 +46,13 @@ function MyCourses() {
                                     </div>
                                     <div className='col-lg-9'>
                                           <div className='row gy-4'>
-                                                <EditCourse />
-                                                <EditCourse />
-                                                <EditCourse />
+                                                {
+                                                      courses && courses.map((course, index) => {
+                                                            return (
+                                                                  <EditCourse course={course} key={index} />
+                                                            )
+                                                      })
+                                                }
                                           </div>
                                     </div>
                               </div>
