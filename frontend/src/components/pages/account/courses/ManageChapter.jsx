@@ -8,7 +8,9 @@ import UpdateChapter from './UpdateChapter';
 import CreateLesson from './CreateLesson';
 import { FaPlus, FaTrashAlt } from 'react-icons/fa';
 import { BsPencilSquare } from 'react-icons/bs';
+import { AiOutlineDrag } from 'react-icons/ai';
 import LessonsSort from './LessonsSort';
+import SortChapters from './SortChapters';
 
 
 
@@ -40,6 +42,14 @@ function ManageChapter({ course, params }) {
       const handleShowLessonSortModal = (lessons) => {
             setShowLessonSortModal(true);
             setLessonsData(lessons);
+      }
+
+      //Sort Chapter Modal
+      const [showChapterSortModal, setShowChapterSortModal] = useState(false);
+      const handleCloseChapterSortModal = () => setShowChapterSortModal(false);
+      const handleShowChapterSortModal = () => {
+            setShowChapterSortModal(true);
+            // setChapters(chapters);
       }
 
       const chapterReducer = (state, action) => {
@@ -150,7 +160,10 @@ function ManageChapter({ course, params }) {
                               <div className="d-flex">
                                     <div className="d-flex justify-content-between w-100">
                                           <h4 className="h5 border-bottom pb-3 mb-3">Chapters</h4>
-                                          <Link onClick={() => handleShowLessonModal(course)}><FaPlus size={12} /> <strong>Add Lesson</strong></Link>
+                                          <div>
+                                                <Link onClick={() => handleShowLessonModal()}><FaPlus size={12} /> <strong>Add Lesson</strong></Link>
+                                                <Link className="ms-2" onClick={() => handleShowChapterSortModal()}><AiOutlineDrag /> <strong>Reorder Chapters</strong></Link>
+                                          </div>
                                     </div>
                               </div>
                               <form className="mb-4" onSubmit={handleSubmit(onSubmit)}>
@@ -242,6 +255,12 @@ function ManageChapter({ course, params }) {
                         showLessonSortModal={showLessonSortModal}
                         handleCloseLessonSortModal={handleCloseLessonSortModal}
                         lessonsData={lessonsData}
+                        setChapters={setChapters}
+                  />
+                  <SortChapters
+                        showChapterSortModal={showChapterSortModal}
+                        handleCloseChapterSortModal={handleCloseChapterSortModal}
+                        course={course}
                         setChapters={setChapters}
                   />
             </>

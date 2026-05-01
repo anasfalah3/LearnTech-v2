@@ -70,6 +70,7 @@ class ChapterController extends Controller
 
         $chapter->title = $request->chapter;
         $chapter->save();
+        $chapter->load('lessons');
 
         return response()->json([
             'status' => '200',
@@ -99,13 +100,19 @@ class ChapterController extends Controller
 
     public function sortChapters(Request $request)
     {
+        $courseId = '';
         if (!empty($request->chapters)) {
             foreach ($request->chapters as $key => $chapter) {
+                $courseId = $chapter['course_id'];
                 Chapter::where('id', $chapter['id'])->update(['sort_order' => $key]);
             }
         }
+        $chapters = Chapter::where('course_id', $courseId)
+            ->with('lessons')
+            ->orderBy('sort_order', 'ASC')->get();
         return response()->json([
             'status' => '200',
+            'chapters' => $chapters,
             'message' => 'Order saved successfully',
         ], 200);
     }
