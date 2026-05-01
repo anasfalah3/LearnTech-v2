@@ -8,6 +8,7 @@ import UpdateChapter from './UpdateChapter';
 import CreateLesson from './CreateLesson';
 import { FaPlus, FaTrashAlt } from 'react-icons/fa';
 import { BsPencilSquare } from 'react-icons/bs';
+import LessonsSort from './LessonsSort';
 
 
 
@@ -15,6 +16,7 @@ function ManageChapter({ course, params }) {
       const [loading, setLoading] = useState(false);
       const { register, handleSubmit, formState: { errors }, reset } = useForm();
       const [chapterData, setChapterData] = useState();
+      const [lessonsData, setLessonsData] = useState([]);
 
       //Update Chapter Modal
       const [showChapter, setShowChapter] = useState(false);
@@ -25,11 +27,19 @@ function ManageChapter({ course, params }) {
       }
 
 
-      //Update Lesson Modal
+      //Create Lesson Modal
       const [showLessonModal, setShowLessonModal] = useState(false);
       const handleCloseLessonModal = () => setShowLessonModal(false);
       const handleShowLessonModal = () => {
             setShowLessonModal(true);
+      }
+
+      //Sort Lesson Modal
+      const [showLessonSortModal, setShowLessonSortModal] = useState(false);
+      const handleCloseLessonSortModal = () => setShowLessonSortModal(false);
+      const handleShowLessonSortModal = (lessons) => {
+            setShowLessonSortModal(true);
+            setLessonsData(lessons);
       }
 
       const chapterReducer = (state, action) => {
@@ -169,8 +179,9 @@ function ManageChapter({ course, params }) {
 
                                                                               <div className="d-flex justify-content-between mb-2 mt-4">
                                                                                     <h4 className="h5">Lessons</h4>
-                                                                                    <a className="h6" href="#" data-discover="true"></a>
-                                                                                    <strong>Reorder Lessons</strong>
+                                                                                    <Link className="h6" onClick={() => { handleShowLessonSortModal(chapter.lessons) }} data-discover="true">
+                                                                                          <strong>Reorder Lessons</strong>
+                                                                                    </Link>
                                                                               </div>
                                                                         </div>
                                                                         <div className="col-md-12">
@@ -226,6 +237,12 @@ function ManageChapter({ course, params }) {
                         showLessonModal={showLessonModal}
                         handleCloseLessonModal={handleCloseLessonModal}
                         course={course}
+                  />
+                  <LessonsSort
+                        showLessonSortModal={showLessonSortModal}
+                        handleCloseLessonSortModal={handleCloseLessonSortModal}
+                        lessonsData={lessonsData}
+                        setChapters={setChapters}
                   />
             </>
       )
