@@ -6,6 +6,12 @@ function EditCourse({ course, deleteCourse }) {
                   <div className='card border-0'>
                         <div className='card-img-top'>
                               {
+                                    course.status == 1 && <span className="fw-bold badge bg-success position-absolute top-0 end-0 m-2">Published </span>
+                              }
+                              {
+                                    course.status == 0 && <span className="fw-bold badge bg-light text-muted position-absolute top-0 end-0 m-2">Draft </span>
+                              }
+                              {
                                     course.course_small_image && <img src={course.course_small_image} alt="" className='img-fluid' />
                               }
                               {
