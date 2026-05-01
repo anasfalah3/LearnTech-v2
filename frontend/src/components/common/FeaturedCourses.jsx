@@ -1,6 +1,33 @@
+import { useEffect, useState } from 'react';
 import Course from './Course'
+import { apiUrl } from './Config';
 
 function FeaturedCourses() {
+      const [courses, setCourses] = useState([]);
+
+      const fetchFeaturedCourses = () => {
+            fetch(`${apiUrl}/fetch-featured-courses`, {
+                  method: "GET",
+                  headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                  },
+
+            })
+                  .then(res => res.json())
+                  .then(result => {
+                        if (result.status == 200) {
+                              console.log(result.data);
+                              setCourses(result.data);
+                        } else {
+                              console.log("something went wrong");
+                        }
+                  })
+      }
+
+      useEffect(() => {
+            fetchFeaturedCourses();
+      }, [])
       return (
             <section className='section-3 my-5'>
                   <div className="container">
@@ -9,57 +36,17 @@ function FeaturedCourses() {
                               <p>Discover courses designed to help you excel in your professional and personal growth.</p>
                         </div>
                         <div className="row gy-4">
-                              <Course
-                                    title='The complete 2025 Web Development Bootcamp'
-                                    level='Advance'
-                                    enrolled='10'
-                                    customClasses="col-lg-3 col-md-6"
-                              />
-                              <Course
-                                    title='The complete 2025 Web Development Bootcamp'
-                                    level='Advance'
-                                    enrolled='10'
-                                    customClasses="col-lg-3 col-md-6"
-                              />
-                              <Course
-                                    title='The complete 2025 Web Development Bootcamp'
-                                    level='Advance'
-                                    enrolled='10'
-                                    customClasses="col-lg-3 col-md-6"
-                              />
-                              <Course
-                                    title='The complete 2025 Web Development Bootcamp'
-                                    level='Advance'
-                                    enrolled='10'
-                                    customClasses="col-lg-3 col-md-6"
-                              />
-                              <Course
-                                    title='The complete 2025 Web Development Bootcamp'
-                                    level='Advance'
-                                    enrolled='10'
-                                    customClasses="col-lg-3 col-md-6"
-                              />
-                              <Course
-                                    title='The complete 2025 Web Development Bootcamp'
-                                    level='Advance'
-                                    enrolled='10'
-                                    customClasses="col-lg-3 col-md-6"
-                              />
-
-                              <Course
-                                    title='The complete 2025 Web Development Bootcamp'
-                                    level='Advance'
-                                    enrolled='10'
-                                    customClasses="col-lg-3 col-md-6"
-                              />
-
-                              <Course
-                                    title='The complete 2025 Web Development Bootcamp'
-                                    level='Advance'
-                                    enrolled='10'
-                                    customClasses="col-lg-3 col-md-6"
-                              />   s
-
+                              {
+                                    courses && courses.map((course, index) => {
+                                          return (
+                                                <Course
+                                                      key={index}
+                                                      course={course}
+                                                      customClasses="col-lg-3 col-md-6"
+                                                />
+                                          )
+                                    })
+                              }
                         </div>
                   </div>
             </section>

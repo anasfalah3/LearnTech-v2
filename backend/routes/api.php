@@ -5,12 +5,16 @@ use App\Http\Controllers\front\CourseController;
 use App\Http\Controllers\front\OutcomeController;
 use App\Http\Controllers\front\RequirementController;
 use App\Http\Controllers\front\ChapterController;
+use App\Http\Controllers\front\HomeController;
 use App\Http\Controllers\front\LessonController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::post('/register', [AccountController::class, 'register']);
 Route::post('/login', [AccountController::class, 'authenticate']);
+
+Route::get('/fetch-categories', [HomeController::class, 'fetchCategories']);
+Route::get('/fetch-featured-courses', [HomeController::class, 'fetchFeaturedCourses']);
 
 Route::get('/user', function (Request $request) {
     return $request->user();
