@@ -219,8 +219,8 @@ class CourseController extends Controller
                 if (!empty($lessons)) {
                     foreach ($lessons as $lesson) {
                         if ($lesson->video != "") {
-                            if (File::exists(public_path('uploads/course/videos' . $lesson->video))) {
-                                File::delete(public_path('uploads/course/videos' . $lesson->video));
+                            if (File::exists(public_path('uploads/course/videos/' . $lesson->video))) {
+                                File::delete(public_path('uploads/course/videos/' . $lesson->video));
                             }
                         }
                     }
