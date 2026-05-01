@@ -4,6 +4,7 @@ import UserSidebar from "../../common/UserSidebar"
 import EditCourse from "../../common/EditCourse"
 import { apiUrl, token } from "../../common/Config"
 import { useEffect, useState } from "react"
+import toast from "react-hot-toast"
 
 function MyCourses() {
       const [courses, setCourses] = useState([]);
@@ -25,6 +26,30 @@ function MyCourses() {
                               console.log("somthing went wrong")
                         }
                   })
+      }
+
+      const deleteCourse = async (id) => {
+            if (confirm("Are you sure you want to delete this Course?")) {
+                  await fetch(`${apiUrl}/courses/${id}`, {
+                        method: "DELETE",
+                        headers: {
+                              'Content-Type': 'application/json',
+                              'Accept': 'application/json',
+                              'Authorization': `Bearer ${token}`
+                        },
+                  })
+                        .then(res => res.json())
+                        .then(result => {
+                              console.log(result)
+                              if (result.status == 200) {
+                                    const newCourses = courses.filter(course => course.id != id);
+                                    setCourses(newCourses);
+                                    toast.success(result.message);
+                              } else {
+                                    console.log("somthing went wrong")
+                              }
+                        })
+            }
       }
 
       useEffect(() => {
@@ -49,7 +74,7 @@ function MyCourses() {
                                                 {
                                                       courses && courses.map((course, index) => {
                                                             return (
-                                                                  <EditCourse course={course} key={index} />
+                                                                  <EditCourse course={course} key={index} deleteCourse={deleteCourse} />
                                                             )
                                                       })
                                                 }
