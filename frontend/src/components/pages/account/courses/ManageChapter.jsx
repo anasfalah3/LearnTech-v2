@@ -104,6 +104,28 @@ function ManageChapter({ course, params }) {
                         })
             }
       }
+      const deleteLesson = async (id) => {
+            if (confirm("Are you sure you want to delete this lesson?")) {
+                  await fetch(`${apiUrl}/lessons/${id}`, {
+                        method: "DELETE",
+                        headers: {
+                              'Content-Type': 'application/json',
+                              'Accept': 'application/json',
+                              'Authorization': `Bearer ${token}`
+                        },
+                  })
+                        .then(res => res.json())
+                        .then(result => {
+                              console.log(result)
+                              if (result.status == 200) {
+                                    setChapters({ type: "UPDATE_CHAPTER", payload: result.chapter });
+                                    toast.success(result.message);
+                              } else {
+                                    console.log("somthing went wrong")
+                              }
+                        })
+            }
+      }
 
       useEffect(() => {
             if (course.chapters) {
@@ -155,7 +177,7 @@ function ManageChapter({ course, params }) {
                                                                               {
                                                                                     chapter.lessons && chapter.lessons.map((lesson) => {
                                                                                           return (
-                                                                                                <div className='card shadow px-3 py-2 mb-2'>
+                                                                                                <div key={lesson.id} className='card shadow px-3 py-2 mb-2'>
                                                                                                       <div className="row">
                                                                                                             <div className="col-md-7">
                                                                                                                   {lesson.title}
@@ -170,7 +192,7 @@ function ManageChapter({ course, params }) {
 
 
                                                                                                                   <Link to={`/account/courses/edit-lesson/${lesson.id}/${course.id}`} className='ms-2'><BsPencilSquare size={14} /></Link>
-                                                                                                                  <Link to="#" className='ms-2 text-danger'><FaTrashAlt size={14} /></Link>
+                                                                                                                  <Link to="#" onClick={() => deleteLesson(lesson.id)} className='ms-2 text-danger'><FaTrashAlt size={14} /></Link>
                                                                                                             </div>
                                                                                                       </div>
                                                                                                 </div>
