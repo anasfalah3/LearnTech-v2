@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react";
 
 import Layout from "../common/Layout"
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { Rating } from 'react-simple-star-rating'
-import ReactPlayer from 'react-player'
 import { Accordion, Badge, ListGroup, Card } from "react-bootstrap";
-import { apiUrl, convertMinutesToHours } from "../common/Config";
+import { apiUrl, convertMinutesToHours, token } from "../common/Config";
 import { LuMonitorPlay } from 'react-icons/lu'
 import Loading from "../common/Loading";
 import NotFound from "../common/NotFound";
 import FreePreview from "../common/FreePreview";
+import toast from 'react-hot-toast';
 
 
 function Detail() {
@@ -18,6 +18,7 @@ function Detail() {
       const [course, setCourse] = useState(null);
       const [loading, setLoading] = useState(true);
       const [freeLesson, setFreeLesson] = useState(null);
+      const navigate = useNavigate();
 
       const [show, setShow] = useState(false);
 
@@ -45,6 +46,40 @@ function Detail() {
                               setCourse(result.data);
                         } else {
                               console.log("something went wrong");
+                        }
+                  })
+      }
+      const enrollCourse = async () => {
+            var data = {
+                  course_id: course.id,
+
+            }
+            await fetch(`${apiUrl}/enroll-course`, {
+                  method: "POST",
+                  headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                  },
+                  body: JSON.stringify(data)
+            })
+                  .then(async res => {
+                        const result = await res.json();
+                        return {
+                              status: res.status,
+                              data: result
+                        }
+                  })
+                  .then(({ status, data }) => {
+                        console.log(data);
+                        if (status == 200) {
+                              toast.success(data.message)
+                        } else if (status == 401) {
+                              toast.error("please login first to enroll in this course")
+                              navigate('/account/login')
+                        }
+                        else {
+                              toast.error(data.message)
                         }
                   })
       }
@@ -236,8 +271,8 @@ function Detail() {
                                                       }
                                                       {/* Buttons */}
                                                       <div className="mt-4">
-                                                            <button className="btn btn-primary w-100">
-                                                                  <i className="bi bi-ticket"></i> Buy Now
+                                                            <button onClick={() => enrollCourse()} className="btn btn-primary w-100">
+                                                                  <i className="bi bi-ticket"></i> Enroll Now
                                                             </button>
                                                       </div>
                                                 </Card.Body>

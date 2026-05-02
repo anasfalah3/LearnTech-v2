@@ -5,6 +5,7 @@ namespace App\Http\Controllers\front;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Course;
+use App\Models\Enrollment;
 use App\Models\Language;
 use App\Models\Level;
 use Illuminate\Http\Request;
@@ -140,6 +141,37 @@ class HomeController extends Controller
         return response()->json([
             'status' => 200,
             'data' => $course
+        ], 200);
+    }
+    public function enroll(Request $request)
+    {
+        $course = Course::find($request->course_id);
+        if ($course == null) {
+            return response()->json([
+                'status' => 404,
+                'message' => 'Course not found'
+            ], 404);
+        }
+        $count = Enrollment::where([
+            'user_id' => $request->user()->id,
+            'course_id' => $request->course_id
+        ])->count();
+
+        if ($count > 0) {
+            return response()->json([
+                'status' => 409,
+                'message' => 'You are already enrolled in this course'
+            ], 409);
+        }
+        $enrollment = new Enrollment();
+        $enrollment->user_id = $request->user()->id;
+        $enrollment->course_id = $request->course_id;
+        $enrollment->save();
+
+        return response()->json([
+            'status' => 200,
+            'data' => $course,
+            'message' => 'You have successfully enrolled'
         ], 200);
     }
 }
