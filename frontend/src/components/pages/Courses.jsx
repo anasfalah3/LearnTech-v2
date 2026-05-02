@@ -14,7 +14,7 @@ function Courses() {
       const [levels, setLevels] = useState([]);
       const [languages, setLanguages] = useState([]);
       const [courses, setCourses] = useState([]);
-      const [loading, setLoading] = useState([]);
+      const [loading, setLoading] = useState(false);
       const [categoryChecked, setCategoryChecked] = useState(() => {
             const category = searchParams.get('category');
             return category ? category.split(',') : [];

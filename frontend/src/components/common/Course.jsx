@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom"
+
 function Course({ course, customClasses }) {
       return (
             <div className={customClasses}>
@@ -53,7 +55,7 @@ function Course({ course, customClasses }) {
                                           course.price && <div className="price">${course.price}</div>
                                     }
                                     <div className="add-to-cart">
-                                          <a href="/detail" className="btn btn-primary" >Read More</a>
+                                          <Link to={`/detail/${course.id}`} className="btn btn-primary" >Read More</Link>
                                     </div>
                               </div>
                         </div>
