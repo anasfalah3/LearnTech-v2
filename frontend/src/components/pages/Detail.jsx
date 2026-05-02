@@ -9,6 +9,7 @@ import { apiUrl, convertMinutesToHours } from "../common/Config";
 import { LuMonitorPlay } from 'react-icons/lu'
 import Loading from "../common/Loading";
 import NotFound from "../common/NotFound";
+import FreePreview from "../common/FreePreview";
 
 
 function Detail() {
@@ -16,6 +17,15 @@ function Detail() {
       const params = useParams();
       const [course, setCourse] = useState(null);
       const [loading, setLoading] = useState(true);
+      const [freeLesson, setFreeLesson] = useState(null);
+
+      const [show, setShow] = useState(false);
+
+      const handleClose = () => setShow(false);
+      const handleShow = (lesson) => {
+            setShow(true)
+            setFreeLesson(lesson);
+      };
 
       const fetchCourse = () => {
             setLoading(true);
@@ -44,6 +54,9 @@ function Detail() {
       }, [])
       return (
             <Layout>
+                  {
+                        freeLesson && <FreePreview show={show} handleClose={handleClose} freeLesson={freeLesson} />
+                  }
                   {
                         loading == true && <div className="mt-5"><Loading /></div>
                   }
@@ -131,6 +144,9 @@ function Detail() {
                                                 <div className='col-md-12 mt-4'>
                                                       <div className='border bg-white rounded-3 p-4'>
                                                             <h3 className="h4 mb-3">Course Structure</h3>
+                                                            <p>
+                                                                  {course.chapters_count} Chapters . {course.total_lessons} Lectures . {convertMinutesToHours(course.total_duration)}
+                                                            </p>
                                                             <Accordion defaultActiveKey="0" id="courseAccordion">
                                                                   {
                                                                         course.chapters && course.chapters.map((chapter, index) => (
@@ -154,7 +170,7 @@ function Detail() {
                                                                                                                                           lesson.is_free_preview == 'yes' && (
 
                                                                                                                                                 <Badge bg="primary">
-                                                                                                                                                      <Link className="text-white text-decoration-none">Preview</Link>
+                                                                                                                                                      <Link onClick={() => handleShow(lesson)} className="text-white text-decoration-none">Preview</Link>
                                                                                                                                                 </Badge>
                                                                                                                                           )
                                                                                                                                     }
