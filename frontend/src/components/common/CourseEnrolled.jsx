@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom"
+
 function CourseEnrolled({ enrollment }) {
       return (
             <div className="col-md-4">
@@ -50,7 +52,7 @@ function CourseEnrolled({ enrollment }) {
                         <div className="card-footer bg-white">
                               <div className="d-flex py-2 justify-content-between align-items-center">
                                     <div className="add-to-cart">
-                                          <a href="/detail" className="btn btn-primary" >Watch Now</a>
+                                          <Link to={`/account/watch-course/${enrollment.course_id}`} className="btn btn-primary" >Watch Now</Link>
                                     </div>
                               </div>
                         </div>

@@ -31,7 +31,11 @@ function App() {
               <MyLearning />
             </RequireAuth>
           } />
-          <Route path="/account/watch-course" element={<WatchCourse />} />
+          <Route path="/account/watch-course/:id" element={
+            <RequireAuth>
+              <WatchCourse />
+            </RequireAuth>
+          } />
           <Route path="/account/change-password" element={<ChangePassword />} />
           <Route path="/account/dashboard" element={
             <RequireAuth>
