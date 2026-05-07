@@ -186,6 +186,33 @@ class CourseController extends Controller
             ], 404);
         }
 
+        //At least one chapter should be added to publish a course
+        $chapters = Chapter::where('course_id', $id)->pluck('id')->toArray();
+
+        if (count($chapters) == 0) {
+            return response()->json([
+                'status' => 200,
+                'course' => $course,
+                'message' => "At least one chapter should be added to publish this course"
+            ], 200);
+        }
+        //At least one lesson with video should be added to publish a course
+        $lessonsCount = Lesson::whereIn('chapter_id', $chapters)
+            ->where('status', 1)
+            ->whereNotNull('video')
+            ->count();
+
+        if ($lessonsCount == 0) {
+            return response()->json([
+                'status' => 200,
+                'course' => $course,
+                'message' => "At least one lesson with video should be added to publish this course"
+            ], 200);
+        }
+
+
+
+
         $course->status = $request->status;
         $course->save();
 
