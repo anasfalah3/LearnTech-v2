@@ -139,6 +139,8 @@ class AccountController extends Controller
             ], 404);
         }
 
+        $totalLessons = $course->chapters->sum('lessons_count');
+
         $activeLesson = collect();
 
         //if no activity saved then show first lesson of first chapter
@@ -179,10 +181,30 @@ class AccountController extends Controller
             $activeLesson = Lesson::where('id', $activity->lesson_id)->first();
         }
 
+        //Fetch lessons which are completed
+        $completedLessons = Activity::where([
+            'user_id' => $request->user()->id,
+            'course_id' => $id,
+            'is_completed' => 'yes'
+        ])->pluck('lesson_id')->toArray();
+
+
+        $completedLessonsCount = Activity::where([
+            'user_id' => $request->user()->id,
+            'course_id' => $id,
+            'is_completed' => 'yes'
+        ])->count();
+
+        $progress = round(($completedLessonsCount / $totalLessons) * 100);
+
+
+
         return response()->json([
             'status' => 200,
             'data' => $course,
-            'activeLesson' => $activeLesson
+            'progress' => $progress,
+            'activeLesson' => $activeLesson,
+            'completedLessons' => $completedLessons
         ], 200);
     }
 
@@ -210,6 +232,62 @@ class AccountController extends Controller
         return response()->json([
             'status' => 200,
             'message' => "User activity saved successfully",
+        ], 200);
+    }
+
+    public function markAsComplete(Request $request)
+    {
+        Activity::where([
+            'user_id' => $request->user()->id,
+            'course_id' => $request->course_id,
+            'lesson_id' => $request->lesson_id,
+            'chapter_id' => $request->chapter_id
+        ])->update([
+            'is_completed' => 'yes'
+        ]);
+
+        //Fetch lessons which are completed
+        $completedLessons = Activity::where([
+            'user_id' => $request->user()->id,
+            'course_id' => $request->course_id,
+            'is_completed' => 'yes'
+        ])->pluck('lesson_id')->toArray();
+
+        $course = Course::where('id', $request->course_id)
+            ->withCount('chapters')
+            ->with([
+                'chapters' => function ($query) {
+                    $query->withCount(['lessons' => function ($q) {
+                        $q->where('status', 1);
+                        $q->whereNotNull('video');
+                    }]);
+                    $query->withSum(['lessons' => function ($q) {
+                        $q->where('status', 1);
+                        $q->whereNotNull('video');
+                    }], 'duration');
+                },
+                'chapters.lessons' => function ($query) {
+                    $query->where('status', 1);
+                    $query->whereNotNull('video');
+                },
+            ])
+            ->first();
+
+        $totalLessons = $course->chapters->sum('lessons_count');
+
+        $completedLessonsCount = Activity::where([
+            'user_id' => $request->user()->id,
+            'course_id' => $request->course_id,
+            'is_completed' => 'yes'
+        ])->count();
+
+        $progress = round(($completedLessonsCount / $totalLessons) * 100);
+
+        return response()->json([
+            'status' => 200,
+            'completedLessons' => $completedLessons,
+            'progress' => $progress,
+            'message' => "Lesson marked as complete successfully",
         ], 200);
     }
 }

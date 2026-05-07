@@ -20,10 +20,13 @@ import {
     MediaMuteButton,
     MediaFullscreenButton,
 } from "media-chrome/react";
+import { toast } from 'react-hot-toast'
 
 function WatchCourse() {
     const [course, setCourse] = useState({});
     const [activeLesson, setactiveLesson] = useState(null);
+    const [completedLessons, setCompletedLesson] = useState([]);
+    const [progress, setProgress] = useState(0);
     const params = useParams();
 
     const fetchCourse = async () => {
@@ -41,6 +44,8 @@ function WatchCourse() {
                 if (result.status == 200) {
                     setCourse(result.data);
                     setactiveLesson(result.activeLesson);
+                    setCompletedLesson(result.completedLessons);
+                    setProgress(result.progress);
                 } else {
                     console.log("somthing went wrong")
                 }
@@ -67,7 +72,34 @@ function WatchCourse() {
             .then(result => {
                 console.log(result)
                 if (result.status == 200) {
-
+                    console.log(result.message)
+                } else {
+                    console.log("somthing went wrong")
+                }
+            })
+    }
+    const markAsComplete = async (activeLesson) => {
+        const data = {
+            course_id: params.id,
+            lesson_id: activeLesson.id,
+            chapter_id: activeLesson.chapter_id
+        }
+        await fetch(`${apiUrl}/mark-as-complete`, {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify(data)
+        })
+            .then(res => res.json())
+            .then(result => {
+                console.log(result)
+                if (result.status == 200) {
+                    setCompletedLesson(result.completedLessons);
+                    setProgress(result.progress);
+                    toast.success(result.message);
                 } else {
                     console.log("somthing went wrong")
                 }
@@ -122,8 +154,8 @@ function WatchCourse() {
                                             <div className='d-flex justify-content-between align-items-center border-bottom pb-2 mb-3 pt-1'>
                                                 <h3 className='pt-2'>{activeLesson.title}</h3>
                                                 <div>
-                                                    <a href="" className='btn btn-primary px-3'>
-                                                        Mark as complete <IoMdCheckmarkCircleOutline size={20} /> </a>
+                                                    <Link onClick={() => markAsComplete(activeLesson)} className={`${completedLessons && completedLessons.includes(activeLesson.id) ? "disabled" : ''} btn btn-primary px-3`}>
+                                                        Mark as complete <IoMdCheckmarkCircleOutline size={20} /> </Link>
                                                 </div>
                                             </div>
                                             <div dangerouslySetInnerHTML={{ __html: activeLesson.description }}>
@@ -139,9 +171,9 @@ function WatchCourse() {
                                             <strong>{course.title}</strong>
                                         </div>
                                         <div className='py-2'>
-                                            <ProgressBar now={50} />
+                                            <ProgressBar now={progress} />
                                             <div className='pt-2'>
-                                                0% complete
+                                                {progress}% complete
                                             </div>
                                         </div>
                                         <Accordion flush>
@@ -156,7 +188,7 @@ function WatchCourse() {
                                                                         chapter.lessons && chapter.lessons.map((lesson, index) => {
                                                                             return (
                                                                                 <li className='pb-2' key={index}>
-                                                                                    <Link onClick={() => showLesson(lesson)}>
+                                                                                    <Link className={`${completedLessons && completedLessons.includes(lesson.id) ? "text-success text-decoration-line-through" : ''}`} onClick={() => showLesson(lesson)}>
                                                                                         <MdSlowMotionVideo size={20} /> {lesson.title}
                                                                                     </Link>
                                                                                 </li>
