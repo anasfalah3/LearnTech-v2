@@ -82,6 +82,7 @@ class AccountController extends Controller
             ->with('level')
             ->withCount('reviews')
             ->withSum('reviews', 'rating')
+            ->withCount('enrollments')
             ->get();
 
         $courses->map(function ($course) {
@@ -99,6 +100,7 @@ class AccountController extends Controller
             ->with(['course' => function ($query) {
                 $query->withCount('reviews');
                 $query->withSum('reviews', 'rating');
+                $query->withCount('enrollments');
             }, 'course.level'])
             ->get();
 

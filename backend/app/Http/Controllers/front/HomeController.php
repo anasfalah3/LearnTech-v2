@@ -48,6 +48,7 @@ class HomeController extends Controller
             ->with('level')
             ->withCount('reviews')
             ->withSum('reviews', 'rating')
+            ->withCount('enrollments')
             ->where('is_featured', 'yes')
             ->where('status', 1)
             ->get();
@@ -66,7 +67,8 @@ class HomeController extends Controller
         $courses = Course::where('status', 1)
             ->with('level')
             ->withCount('reviews')
-            ->withSum('reviews', 'rating');
+            ->withSum('reviews', 'rating')
+            ->withCount('enrollments');
         //Filter courses by keyword
         if (!empty($request->keyword)) {
             $courses = $courses->where('title', 'like', '%' . $request->keyword . '%');
@@ -120,6 +122,7 @@ class HomeController extends Controller
             ->withCount('chapters')
             ->withCount('reviews')
             ->withSum('reviews', 'rating')
+            ->withCount('enrollments')
             ->with([
                 'reviews',
                 'reviews.user',
