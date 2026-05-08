@@ -115,8 +115,8 @@ function Detail() {
                                                       <span className="badge bg-green">{course.category.name}</span>
                                                 </div>
                                                 <div className='d-flex ps-3'>
-                                                      <div className="text pe-2 pt-1">5.0</div>
-                                                      <Rating initialValue={rating} size={20} />
+                                                      <div className="text pe-2 pt-1">{course?.rating}</div>
+                                                      <Rating readonly initialValue={course?.rating} size={20} />
                                                 </div>
                                           </div>
                                           <div className="row mt-4">
@@ -234,27 +234,22 @@ function Detail() {
                                                             <p>Our student says about this course</p>
 
                                                             <div className='mt-4'>
-                                                                  <div className="d-flex align-items-start mb-4 border-bottom pb-3">
-                                                                        <img src="https://placehold.co/50" alt="User" className="rounded-circle me-3" />
-                                                                        <div>
-                                                                              <h6 className="mb-0">Mohit Singh <span className="text-muted fs-6">Jan 2, 2025</span></h6>
-                                                                              <div className="text-warning mb-2">
-                                                                                    <Rating initialValue={rating} size={20} />
-                                                                              </div>
-                                                                              <p className="mb-0">Quisque et quam lacus amet. Tincidunt auctor phasellus purus faucibus lectus mattis.</p>
-                                                                        </div>
-                                                                  </div>
-
-                                                                  <div className="d-flex align-items-start mb-4  pb-3">
-                                                                        <img src="https://placehold.co/50" alt="User" className="rounded-circle me-3" />
-                                                                        <div>
-                                                                              <h6 className="mb-0">mark Doe <span className="text-muted fs-6">Jan 10, 2025</span></h6>
-                                                                              <div className="text-warning mb-2">
-                                                                                    <Rating initialValue={rating} size={20} />
-                                                                              </div>
-                                                                              <p className="mb-0">Quisque et quam lacus amet. Tincidunt auctor phasellus purus faucibus lectus mattis.</p>
-                                                                        </div>
-                                                                  </div>
+                                                                  {
+                                                                        course.reviews && course.reviews.map((review, index) => {
+                                                                              return (
+                                                                                    <div key={index} className="d-flex align-items-start mb-4 border-bottom pb-3">
+                                                                                          <img src="https://placehold.co/50" alt="User" className="rounded-circle me-3" />
+                                                                                          <div>
+                                                                                                <h6 className="mb-0">{review?.user?.name} <span className="text-muted fs-6 ms-1">{review.created_at}</span></h6>
+                                                                                                <div className="text-warning mb-2">
+                                                                                                      <Rating readonly initialValue={review.rating} size={20} />
+                                                                                                </div>
+                                                                                                <p className="mb-0">{review.comment}</p>
+                                                                                          </div>
+                                                                                    </div>
+                                                                              )
+                                                                        })
+                                                                  }
                                                             </div>
                                                       </div>
                                                 </div>

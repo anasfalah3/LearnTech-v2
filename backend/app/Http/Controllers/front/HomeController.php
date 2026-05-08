@@ -46,9 +46,16 @@ class HomeController extends Controller
     {
         $courses = Course::orderBy('title', 'asc')
             ->with('level')
+            ->withCount('reviews')
+            ->withSum('reviews', 'rating')
             ->where('is_featured', 'yes')
             ->where('status', 1)
             ->get();
+
+        $courses->map(function ($course) {
+            $course->rating = $course->reviews_count > 0 ?
+                number_format(($course->reviews_sum_rating / $course->reviews_count), 1) : "0.0";
+        });
         return response()->json([
             'status' => 200,
             'data' => $courses
@@ -56,7 +63,10 @@ class HomeController extends Controller
     }
     public function courses(Request $request)
     {
-        $courses = Course::where('status', 1)->with('level');
+        $courses = Course::where('status', 1)
+            ->with('level')
+            ->withCount('reviews')
+            ->withSum('reviews', 'rating');
         //Filter courses by keyword
         if (!empty($request->keyword)) {
             $courses = $courses->where('title', 'like', '%' . $request->keyword . '%');
@@ -94,6 +104,11 @@ class HomeController extends Controller
 
         $courses = $courses->get();
 
+        $courses->map(function ($course) {
+            $course->rating = $course->reviews_count > 0 ?
+                number_format(($course->reviews_sum_rating / $course->reviews_count), 1) : "0.0";
+        });
+
         return response()->json([
             'status' => 200,
             'data' => $courses
@@ -103,7 +118,11 @@ class HomeController extends Controller
     {
         $course = Course::where('id', $id)
             ->withCount('chapters')
+            ->withCount('reviews')
+            ->withSum('reviews', 'rating')
             ->with([
+                'reviews',
+                'reviews.user',
                 'category',
                 'level',
                 'language',
@@ -137,6 +156,9 @@ class HomeController extends Controller
 
         $course->total_duration = $totalDuration;
         $course->total_lessons = $totalLessons;
+
+        $course->rating = $course->reviews_count > 0 ?
+            number_format(($course->reviews_sum_rating / $course->reviews_count), 1) : "0.0";
 
         return response()->json([
             'status' => 200,
