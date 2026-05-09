@@ -346,4 +346,89 @@ class AccountController extends Controller
             'message' => 'Thank you for your feedback'
         ], 200);
     }
+
+    public function fetchUser(Request $request)
+    {
+        $user = User::find($request->user()->id);
+        if ($user == null) {
+            return response()->json([
+                'status' => 404,
+                'message' => 'User not found'
+            ], 404);
+        }
+        return response()->json([
+            'status' => 200,
+            'data' => $user
+        ], 200);
+    }
+
+    public function updatehUser(Request $request)
+    {
+        $user = User::find($request->user()->id);
+        if ($user == null) {
+            return response()->json([
+                'status' => 404,
+                'message' => 'User not found'
+            ], 404);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'name' => 'required',
+            'email' => 'required|email|unique:users,email,' . $request->user()->id . ',id',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 400,
+                'errors' => $validator->errors()
+            ], 400);
+        }
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->save();
+
+        return response()->json([
+            'status' => 200,
+            'message' => 'Profile updated successfully'
+        ], 200);
+    }
+
+    public function updatePassword(Request $request)
+    {
+        $user = User::find($request->user()->id);
+        if ($user == null) {
+            return response()->json([
+                'status' => 404,
+                'message' => 'User not found'
+            ], 404);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'old_password' => 'required',
+            'new_password' => 'required|min:8',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 400,
+                'errors' => $validator->errors()
+            ], 400);
+        }
+
+        //Match old password
+        if (!Hash::check($request->old_password, $user->password)) {
+            return response()->json([
+                'status' => 400,
+                'errors' => ['old_password' => ['The Old password is incorrect']]
+            ], 400);
+        }
+
+        $user->password = $request->new_password;
+        $user->save();
+
+        return response()->json([
+            'status' => 200,
+            'message' => 'Password has been updated successfully'
+        ], 200);
+    }
 }

@@ -69,4 +69,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/save-activity', [AccountController::class, 'saveUserActivity']);
     Route::post('/mark-as-complete', [AccountController::class, 'markAsComplete']);
     Route::post('/leave-rating', [AccountController::class, 'saveRating']);
+    Route::get('/fetch-user', [AccountController::class, 'fetchUser']);
+    Route::post('/update-user', [AccountController::class, 'updatehUser']);
+    Route::post('/update-password', [AccountController::class, 'updatePassword']);
 });

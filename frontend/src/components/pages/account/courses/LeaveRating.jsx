@@ -91,24 +91,26 @@ function LeaveRating() {
                                     </div>
                                     <div className='col-lg-9'>
                                           <div className='row'>
-                                                <div className='card p-3 border-0 shadow-lg'>
-                                                      <div className="card-body">
-                                                            <form onSubmit={handleSubmit(onSubmit)}>
-                                                                  <div className='mb-3'>
-                                                                        <label className='form-label'>Comment</label>
-                                                                        <textarea
-                                                                              {...register("comment", { required: "Please enter your feedback" })}
-                                                                              className={`form-control ${errors.comment && "is-invalid"}`}
-                                                                              placeholder='What is your personal feedback?'></textarea>
-                                                                        {
-                                                                              errors.comment && <p className='invalid-feedback'>{errors.comment?.message}</p>
-                                                                        }
-                                                                  </div>
-                                                                  <div className="mb-3">
-                                                                        <Rating onClick={handleRating} initialValue={rating} />
-                                                                  </div>
-                                                                  <button className='btn btn-primary'>Submit</button>
-                                                            </form>
+                                                <div className="col-md-12">
+                                                      <div className='card p-3 border-0 shadow-lg'>
+                                                            <div className="card-body">
+                                                                  <form onSubmit={handleSubmit(onSubmit)}>
+                                                                        <div className='mb-3'>
+                                                                              <label className='form-label'>Comment</label>
+                                                                              <textarea
+                                                                                    {...register("comment", { required: "Please enter your feedback" })}
+                                                                                    className={`form-control ${errors.comment && "is-invalid"}`}
+                                                                                    placeholder='What is your personal feedback?'></textarea>
+                                                                              {
+                                                                                    errors.comment && <p className='invalid-feedback'>{errors.comment?.message}</p>
+                                                                              }
+                                                                        </div>
+                                                                        <div className="mb-3">
+                                                                              <Rating onClick={handleRating} initialValue={rating} />
+                                                                        </div>
+                                                                        <button className='btn btn-primary'>Submit</button>
+                                                                  </form>
+                                                            </div>
                                                       </div>
                                                 </div>
                                           </div>

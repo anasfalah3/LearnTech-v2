@@ -15,6 +15,7 @@ import CreateCourse from './components/pages/account/courses/CreateCourse'
 import EditCourse from './components/pages/account/courses/EditCourse'
 import EditLesson from './components/pages/account/courses/EditLesson'
 import LeaveRating from './components/pages/account/courses/LeaveRating'
+import Profile from './components/pages/account/Profile'
 function App() {
 
   return (
@@ -42,7 +43,16 @@ function App() {
               <LeaveRating />
             </RequireAuth>
           } />
-          <Route path="/account/change-password" element={<ChangePassword />} />
+          <Route path="/account/profile" element={
+            <RequireAuth>
+              <Profile />
+            </RequireAuth>
+          } />
+          <Route path="/account/change-password" element={
+            <RequireAuth>
+              <ChangePassword />
+            </RequireAuth>
+          } />
           <Route path="/account/dashboard" element={
             <RequireAuth>
               <Dashboard />
