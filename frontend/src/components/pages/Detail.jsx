@@ -3,9 +3,7 @@ import { useEffect, useState } from "react";
 import Layout from "../common/Layout"
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { Rating } from 'react-simple-star-rating'
-import { Accordion, Badge, ListGroup, Card } from "react-bootstrap";
 import { apiUrl, convertMinutesToHours, token } from "../common/Config";
-import { LuMonitorPlay } from 'react-icons/lu'
 import Loading from "../common/Loading";
 import NotFound from "../common/NotFound";
 import FreePreview from "../common/FreePreview";
@@ -13,7 +11,6 @@ import toast from 'react-hot-toast';
 
 
 function Detail() {
-      const [rating, setRating] = useState(4.0)
       const params = useParams();
       const [course, setCourse] = useState(null);
       const [loading, setLoading] = useState(true);
@@ -27,6 +24,12 @@ function Detail() {
             setShow(true)
             setFreeLesson(lesson);
       };
+
+
+      // new
+      const [openChapter, setOpenChapter] = useState(0);
+
+
 
       const fetchCourse = () => {
             setLoading(true);
@@ -52,7 +55,6 @@ function Detail() {
       const enrollCourse = async () => {
             var data = {
                   course_id: course.id,
-
             }
             await fetch(`${apiUrl}/enroll-course`, {
                   method: "POST",
@@ -92,207 +94,231 @@ function Detail() {
                   {
                         freeLesson && <FreePreview show={show} handleClose={handleClose} freeLesson={freeLesson} />
                   }
-                  {
-                        loading == true && <div className="mt-5"><Loading /></div>
-                  }
-                  {
-                        loading == false && !course && <NotFound />
-                  }
-                  {loading == false && course &&
-                        <div className='container pb-5 pt-3'>
-                              <nav aria-label="breadcrumb">
-                                    <ol className="breadcrumb">
-                                          <li className="breadcrumb-item"><a href="/">Home</a></li>
-                                          <li className="breadcrumb-item"><a href="/courses">Courses</a></li>
-                                          <li className="breadcrumb-item active" aria-current="page">{course.title}</li>
-                                    </ol>
-                              </nav>
-                              <div className='row my-5'>
-                                    <div className='col-lg-8'>
-                                          <h2>{course.title}</h2>
-                                          <div className='d-flex'>
-                                                <div className='mt-1'>
-                                                      <span className="badge bg-green">{course.category.name}</span>
-                                                </div>
-                                                <div className='d-flex ps-3'>
-                                                      <div className="text pe-2 pt-1">{course?.rating}</div>
-                                                      <Rating readonly initialValue={course?.rating} size={20} />
-                                                </div>
-                                          </div>
-                                          <div className="row mt-4">
-                                                {/* <div className="col">
-                            <span className="text-muted d-block">Last Updates</span>
-                            <span className="fw-bold">Aug 2021</span>
-                        </div> */}
-                                                <div className="col">
-                                                      <span className="text-muted d-block">Level</span>
-                                                      <span className="fw-bold">{course.level.name}</span>
-                                                </div>
-                                                <div className="col">
-                                                      <span className="text-muted d-block">Students</span>
-                                                      <span className="fw-bold">{course?.enrollments_count}</span>
-                                                </div>
-                                                <div className="col">
-                                                      <span className="text-muted d-block">Language</span>
-                                                      <span className="fw-bold">{course.language.name}</span>
-                                                </div>
-                                          </div>
-                                          <div className='row'>
-                                                <div className='col-md-12 mt-4'>
-                                                      <div className='border bg-white rounded-3 p-4'>
-                                                            <h3 className='mb-3  h4'>Overview</h3>
-                                                            <p>{course.description}</p>
+                  {loading && <div className="mt-5"><Loading /></div>}
+                  {!loading && !course && <NotFound />}
+                  {!loading && course && (
+                        <>
+                              {/* ── HERO BAND ── */}
+                              <div className="detail-hero">
+                                    <div className="container position-relative">
+                                          {/* Breadcrumb */}
+                                          <nav aria-label="breadcrumb" className="mb-3">
+                                                <ol className="breadcrumb mb-0" style={{ fontSize: "0.82rem" }}>
+                                                      <li className="breadcrumb-item"><Link to="/">Home</Link></li>
+                                                      <li className="breadcrumb-item"><Link to="/courses">Courses</Link></li>
+                                                      <li className="breadcrumb-item active">{course.title}</li>
+                                                </ol>
+                                          </nav>
+
+                                          <div className="row align-items-start g-4">
+                                                <div className="col-lg-8">
+                                                      <div className="hero-badge"><i className="bi bi-grid me-1"></i>{course.category.name}</div>
+                                                      <h1 className="fw-bold text-white mb-3" style={{ fontSize: "clamp(1.5rem, 3vw, 2.2rem)", lineHeight: 1.25 }}>
+                                                            {course.title}
+                                                      </h1>
+                                                      <p style={{ color: "#94a3b8", maxWidth: 600, fontSize: "0.95rem" }}>{course.description?.slice(0, 140)}…</p>
+
+                                                      {/* Rating row */}
+                                                      <div className="d-flex align-items-center gap-2 mb-4 flex-wrap">
+                                                            <span className="fw-bold text-warning">{course.rating}</span>
+                                                            <Rating readonly initialValue={course.rating} size={18} />
+                                                            <span style={{ color: "#64748b", fontSize: "0.82rem" }}>({course.reviews.length} reviews)</span>
+                                                            <span style={{ color: "#64748b", fontSize: "0.82rem" }}>· {course.enrollments_count.toLocaleString()} students</span>
+                                                      </div>
+
+                                                      {/* Meta pills */}
+                                                      <div className="d-flex flex-wrap gap-2">
+                                                            <span className="meta-pill"><i className="bi bi-bar-chart-steps"></i>{course.level.name}</span>
+                                                            <span className="meta-pill"><i className="bi bi-translate"></i>{course.language.name}</span>
+                                                            <span className="meta-pill"><i className="bi bi-collection-play"></i>{course.total_lessons} lectures</span>
+                                                            <span className="meta-pill"><i className="bi bi-clock"></i>{convertMinutesToHours(course.total_duration)}</span>
                                                       </div>
                                                 </div>
-                                                <div className='col-md-12 mt-4'>
-                                                      <div className='border bg-white rounded-3 p-4'>
-                                                            <h3 className='mb-3 h4'>What you will learn</h3>
-                                                            <ul className="list-unstyled mt-3">
-                                                                  {
-                                                                        course.outcomes && course.outcomes.map((outcome, index) => (
-                                                                              <li className="d-flex align-items-center mb-2" key={index}>
-                                                                                    <span className="text-success me-2">&#10003;</span>
-                                                                                    <span>{outcome.text}</span>
-                                                                              </li>
-                                                                        ))
-                                                                  }
-                                                            </ul>
-                                                      </div>
-                                                </div>
-
-                                                <div className='col-md-12 mt-4'>
-                                                      <div className='border bg-white rounded-3 p-4'>
-                                                            <h3 className='mb-3 h4'>Requirements</h3>
-                                                            <ul className="list-unstyled mt-3">
-                                                                  {
-                                                                        course.requirements && course.requirements.map((requirement, index) => (
-                                                                              <li className="d-flex align-items-center mb-2" key={index}>
-                                                                                    <span className="text-success me-2">&#10003;</span>
-                                                                                    <span>{requirement.text}</span>
-                                                                              </li>
-                                                                        ))
-                                                                  }
-                                                            </ul>
-                                                      </div>
-                                                </div>
-
-                                                <div className='col-md-12 mt-4'>
-                                                      <div className='border bg-white rounded-3 p-4'>
-                                                            <h3 className="h4 mb-3">Course Structure</h3>
-                                                            <p>
-                                                                  {course.chapters_count} Chapters . {course.total_lessons} Lectures . {convertMinutesToHours(course.total_duration)}
-                                                            </p>
-                                                            <Accordion defaultActiveKey="0" id="courseAccordion">
-                                                                  {
-                                                                        course.chapters && course.chapters.map((chapter, index) => (
-                                                                              <Accordion.Item eventKey={index} key={index}>
-                                                                                    <Accordion.Header>
-                                                                                          {chapter.title} <span className="ms-3 text-muted">({chapter.lessons_count} lessons - {convertMinutesToHours(chapter.lessons_sum_duration)})</span>
-                                                                                    </Accordion.Header>
-                                                                                    <Accordion.Body>
-                                                                                          <ListGroup>
-                                                                                                {
-                                                                                                      chapter.lessons && chapter.lessons.map((lesson, index) => (
-                                                                                                            <ListGroup.Item key={index}>
-                                                                                                                  <div className="row">
-                                                                                                                        <div className="col-md-9">
-                                                                                                                              <LuMonitorPlay className="me-2" />
-                                                                                                                              {lesson.title}
-                                                                                                                        </div>
-                                                                                                                        <div className="col-md-3">
-                                                                                                                              <div className="d-flex justify-content-end">
-                                                                                                                                    {
-                                                                                                                                          lesson.is_free_preview == 'yes' && (
-
-                                                                                                                                                <Badge bg="primary">
-                                                                                                                                                      <Link onClick={() => handleShow(lesson)} className="text-white text-decoration-none">Preview</Link>
-                                                                                                                                                </Badge>
-                                                                                                                                          )
-                                                                                                                                    }
-                                                                                                                                    <span className="text-muted ms-2">{convertMinutesToHours(lesson.duration)}</span>
-                                                                                                                              </div>
-                                                                                                                        </div>
-                                                                                                                  </div>
-
-                                                                                                            </ListGroup.Item>
-                                                                                                      ))
-                                                                                                }
-
-
-                                                                                          </ListGroup>
-                                                                                    </Accordion.Body>
-                                                                              </Accordion.Item>
-                                                                        ))
-                                                                  }
-                                                            </Accordion>
-                                                      </div>
-                                                </div>
-
-                                                <div className='col-md-12 mt-4'>
-                                                      <div className='border bg-white rounded-3 p-4'>
-                                                            <h3 className='mb-3 h4'>Reviews</h3>
-                                                            <p>Our student says about this course</p>
-
-                                                            <div className='mt-4'>
-                                                                  {
-                                                                        course.reviews && course.reviews.map((review, index) => {
-                                                                              return (
-                                                                                    <div key={index} className="d-flex align-items-start mb-4 border-bottom pb-3">
-                                                                                          <img src="https://placehold.co/50" alt="User" className="rounded-circle me-3" />
-                                                                                          <div>
-                                                                                                <h6 className="mb-0">{review?.user?.name} <span className="text-muted fs-6 ms-1">{review.created_at}</span></h6>
-                                                                                                <div className="text-warning mb-2">
-                                                                                                      <Rating readonly initialValue={review.rating} size={20} />
-                                                                                                </div>
-                                                                                                <p className="mb-0">{review.comment}</p>
-                                                                                          </div>
-                                                                                    </div>
-                                                                              )
-                                                                        })
-                                                                  }
-                                                            </div>
-                                                      </div>
-                                                </div>
-                                          </div>
-                                    </div>
-                                    <div className='col-lg-4'>
-                                          <div className='border rounded-3 bg-white p-4 shadow-sm'>
-                                                <Card.Img variant="top" src={course.course_small_image} />
-                                                <Card.Body>
-                                                      <h3 className="fw-bold">${course.price}</h3>
-                                                      {
-                                                            course.cross_price &&
-                                                            <div className="text-muted text-decoration-line-through">${course.cross_price}</div>
-                                                      }
-                                                      {/* Buttons */}
-                                                      <div className="mt-4">
-                                                            <button onClick={() => enrollCourse()} className="btn btn-primary w-100">
-                                                                  <i className="bi bi-ticket"></i> Enroll Now
-                                                            </button>
-                                                      </div>
-                                                </Card.Body>
-                                                <Card.Footer className='mt-4'>
-                                                      <h6 className="fw-bold">This course includes</h6>
-                                                      <ListGroup variant="flush">
-
-                                                            <ListGroup.Item className='ps-0'>
-                                                                  <i className="bi bi-infinity text-primary me-2"></i>
-                                                                  Full lifetime access
-                                                            </ListGroup.Item>
-                                                            <ListGroup.Item className='ps-0'>
-                                                                  <i className="bi bi-tv text-primary me-2"></i>
-                                                                  Access on mobile and TV
-                                                            </ListGroup.Item>
-                                                            <ListGroup.Item className='ps-0'>
-                                                                  <i className="bi bi-award-fill text-primary me-2"></i>
-                                                                  Certificate of completion
-                                                            </ListGroup.Item>
-                                                      </ListGroup>
-                                                </Card.Footer>
                                           </div>
                                     </div>
                               </div>
-                        </div>
+
+                              {/* ── BODY ── */}
+                              <div className="container py-5">
+                                    <div className="row g-4 align-items-start">
+
+                                          {/* ── LEFT COLUMN ── */}
+                                          <div className="col-lg-8">
+
+                                                {/* What you'll learn */}
+                                                <div className="content-card">
+                                                      <div className="section-label">Outcomes</div>
+                                                      <h3 className="h5 fw-bold mb-3">What You Will Learn</h3>
+                                                      <ul className="list-unstyled check-list mb-0">
+                                                            {course.outcomes?.map((o, i) => (
+                                                                  <li key={i}>
+                                                                        <span className="check-icon"><i className="bi bi-check-lg"></i></span>
+                                                                        {o.text}
+                                                                  </li>
+                                                            ))}
+                                                      </ul>
+                                                </div>
+
+                                                {/* Requirements */}
+                                                <div className="content-card">
+                                                      <div className="section-label">Prerequisites</div>
+                                                      <h3 className="h5 fw-bold mb-3">Requirements</h3>
+                                                      <ul className="list-unstyled check-list mb-0">
+                                                            {course.requirements?.map((r, i) => (
+                                                                  <li key={i}>
+                                                                        <span className="check-icon"><i className="bi bi-check-lg"></i></span>
+                                                                        {r.text}
+                                                                  </li>
+                                                            ))}
+                                                      </ul>
+                                                </div>
+
+                                                {/* Overview */}
+                                                <div className="content-card">
+                                                      <div className="section-label">About</div>
+                                                      <h3 className="h5 fw-bold mb-3">Course Overview</h3>
+                                                      <p className="text-muted mb-0" style={{ lineHeight: 1.8, fontSize: "0.93rem" }}>{course.description}</p>
+                                                </div>
+
+                                                {/* Course Structure */}
+                                                <div className="content-card">
+                                                      <div className="section-label">Curriculum</div>
+                                                      <h3 className="h5 fw-bold mb-1">Course Structure</h3>
+                                                      <p className="text-muted mb-4" style={{ fontSize: "0.85rem" }}>
+                                                            <i className="bi bi-journals me-1 text-primary"></i>{course.chapters_count} chapters &nbsp;·&nbsp;
+                                                            <i className="bi bi-play-btn me-1 text-primary"></i>{course.total_lessons} lectures &nbsp;·&nbsp;
+                                                            <i className="bi bi-clock me-1 text-primary"></i>{convertMinutesToHours(course.total_duration)} total
+                                                      </p>
+
+                                                      {course.chapters?.map((chapter, ci) => (
+                                                            <div className="chapter-item" key={ci}>
+                                                                  <div
+                                                                        className={`chapter-header ${openChapter === ci ? "open" : ""}`}
+                                                                        onClick={() => setOpenChapter(openChapter === ci ? null : ci)}
+                                                                  >
+                                                                        <div className="d-flex align-items-center gap-2">
+                                                                              <i className={`bi bi-chevron-${openChapter === ci ? "down" : "right"} text-primary`} style={{ fontSize: "0.75rem" }}></i>
+                                                                              <span className="fw-semibold" style={{ fontSize: "0.92rem" }}>{chapter.title}</span>
+                                                                        </div>
+                                                                        <span className="text-muted" style={{ fontSize: "0.78rem", whiteSpace: "nowrap" }}>
+                                                                              {chapter.lessons_count} lessons · {convertMinutesToHours(chapter.lessons_sum_duration)}
+                                                                        </span>
+                                                                  </div>
+
+                                                                  {openChapter === ci && (
+                                                                        <div className="chapter-body">
+                                                                              {chapter.lessons?.map((lesson, li) => (
+                                                                                    <div className="lesson-row" key={li}>
+                                                                                          <div className="d-flex align-items-center gap-2">
+                                                                                                <i className="bi bi-play-circle text-primary"></i>
+                                                                                                <span>{lesson.title}</span>
+                                                                                          </div>
+                                                                                          <div className="d-flex align-items-center gap-2">
+                                                                                                {lesson.is_free_preview === "yes" && (
+                                                                                                      <button className="preview-badge" onClick={() => handleShow(lesson)}>
+                                                                                                            <i className="bi bi-eye me-1"></i>Preview
+                                                                                                      </button>
+                                                                                                )}
+                                                                                                <span className="text-muted" style={{ fontSize: "0.8rem" }}>{convertMinutesToHours(lesson.duration)}</span>
+                                                                                          </div>
+                                                                                    </div>
+                                                                              ))}
+                                                                        </div>
+                                                                  )}
+                                                            </div>
+                                                      ))}
+                                                </div>
+
+                                                {/* Reviews */}
+                                                <div className="content-card">
+                                                      <div className="section-label">Feedback</div>
+                                                      <div className="d-flex justify-content-between align-items-center mb-1">
+                                                            <h3 className="h5 fw-bold mb-0">Student Reviews</h3>
+                                                            <div className="d-flex align-items-center gap-1">
+                                                                  <span className="fw-bold text-primary fs-4">{course.rating}</span>
+                                                                  <Rating readonly initialValue={course.rating} size={18} />
+                                                            </div>
+                                                      </div>
+                                                      <p className="text-muted mb-4" style={{ fontSize: "0.85rem" }}>Based on {course.reviews.length} reviews</p>
+
+                                                      {course.reviews?.map((review, i) => (
+                                                            <div className="review-card" key={i}>
+                                                                  <div className="reviewer-avatar">
+                                                                        {review.user?.name?.split(" ").map(n => n[0]).join("").slice(0, 2)}
+                                                                  </div>
+                                                                  <div style={{ flex: 1 }}>
+                                                                        <div className="d-flex justify-content-between align-items-start flex-wrap gap-1">
+                                                                              <div>
+                                                                                    <span className="fw-semibold" style={{ fontSize: "0.9rem" }}>{review.user?.name}</span>
+                                                                                    <span className="text-muted ms-2" style={{ fontSize: "0.78rem" }}>{review.created_at}</span>
+                                                                              </div>
+                                                                              <Rating readonly initialValue={review.rating} size={15} />
+                                                                        </div>
+                                                                        <p className="text-muted mt-1 mb-0" style={{ fontSize: "0.88rem", lineHeight: 1.7 }}>{review.comment}</p>
+                                                                  </div>
+                                                            </div>
+                                                      ))}
+                                                </div>
+
+                                          </div>
+
+                                          {/* ── RIGHT SIDEBAR ── */}
+                                          <div className="col-lg-4">
+                                                <div className="sidebar-card">
+                                                      <img src={course.course_small_image} alt={course.title} />
+
+                                                      <div className="sidebar-body">
+                                                            {/* Price */}
+                                                            <div className="d-flex align-items-baseline gap-2 mb-1">
+                                                                  <span className="fw-bold" style={{ fontSize: "1.75rem", color: "var(--dark)", fontFamily: "'Sora',sans-serif" }}>
+                                                                        ${course.price}
+                                                                  </span>
+                                                                  {course.cross_price && (
+                                                                        <span className="text-muted text-decoration-line-through" style={{ fontSize: "1rem" }}>
+                                                                              ${course.cross_price}
+                                                                        </span>
+                                                                  )}
+                                                                  {course.cross_price && (
+                                                                        <span className="badge rounded-pill" style={{ background: "#fef9c3", color: "#92400e", fontWeight: 600 }}>
+                                                                              {Math.round((1 - course.price / course.cross_price) * 100)}% OFF
+                                                                        </span>
+                                                                  )}
+                                                            </div>
+                                                            <p className="text-muted mb-3" style={{ fontSize: "0.78rem" }}>
+                                                                  <i className="bi bi-clock-history me-1"></i>Offer ends in 2 days
+                                                            </p>
+
+                                                            {/* Enroll button */}
+                                                            <button onClick={enrollCourse} className="btn btn-enroll mb-2">
+                                                                  <i className="bi bi-ticket-perforated me-2"></i>Enroll Now
+                                                            </button>
+
+                                                            <p className="text-center text-muted mt-2 mb-0" style={{ fontSize: "0.75rem" }}>
+                                                                  30-day money-back guarantee
+                                                            </p>
+
+                                                            {/* Divider */}
+                                                            <hr style={{ margin: "1.2rem 0" }} />
+
+                                                            {/* Includes */}
+                                                            <div className="fw-semibold mb-2" style={{ fontSize: "0.9rem" }}>This course includes</div>
+                                                            {[
+                                                                  { icon: "bi-infinity", label: "Full lifetime access" },
+                                                                  { icon: "bi-tv", label: "Access on mobile and TV" },
+                                                            ].map((item) => (
+                                                                  <div className="include-item" key={item.label}>
+                                                                        <i className={`bi ${item.icon}`}></i>
+                                                                        <span>{item.label}</span>
+                                                                  </div>
+                                                            ))}
+                                                      </div>
+                                                </div>
+                                          </div>
+
+                                    </div>
+                              </div>
+                        </>
+                  )
                   }
             </Layout>
       )

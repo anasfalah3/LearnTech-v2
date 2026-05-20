@@ -34,69 +34,98 @@ function Register() {
       }
       return (
             <Layout>
-                  <div className='container py-5 mt-5'>
-                        <div className='d-flex align-items-center justify-content-center'>
-                              <form onSubmit={handleSubmit(onSubmit)}>
-                                    <div className='card border-0 shadow register'>
-                                          <div className='card-body p-4'>
-                                                <h3 className='border-bottom pb-3 mb-3'>Register</h3>
+                  <div className="auth-page">
+                        <div className="flex-grow-1 d-flex align-items-center justify-content-center px-3 py-5" style={{ position: "relative", zIndex: 2 }}>
+                              <div className="auth-card">
 
-                                                <div className='mb-3'>
-                                                      <label className='form-label' htmlFor="name">Name</label>
-                                                      <input
-                                                            {...register("name", { required: "The name field is required" })}
-                                                            type="text"
-                                                            className={`form-control ${errors.name && "is-invalid"}`}
-                                                            placeholder='Name' />
-                                                      {
-                                                            errors.name && <p className='invalid-feedback'>{errors.name.message}</p>
-                                                      }
+                                    {/* Card Header */}
+                                    <div className="auth-card-header">
+                                          <a href="/" className="auth-brand">
+                                                <i className="bi bi-mortarboard-fill"></i>LearnTech
+                                          </a>
+                                          <div className="auth-badge"><i className="bi bi-stars"></i>Free Account</div>
+                                          <h2 className="text-white fw-bold mb-1" style={{ fontSize: "1.5rem" }}>Create your account</h2>
+                                          <p style={{ color: "#94a3b8", fontSize: "0.88rem", marginBottom: 0 }}>
+                                                Join 50,000+ learners and start for free today.
+                                          </p>
+                                    </div>
+
+                                    {/* Card Body */}
+                                    <div className="auth-card-body">
+
+                                          {/* Perks */}
+                                          <div className="d-flex gap-3 mb-4 flex-wrap">
+                                                {["7-day free trial", "Cancel anytime", "500+ free courses"].map((perk) => (
+                                                      <span key={perk} style={{ fontSize: "0.75rem", color: "#64748b", display: "flex", alignItems: "center", gap: 4 }}>
+                                                            <i className="bi bi-check-circle-fill" style={{ color: "#22c55e" }}></i>{perk}
+                                                      </span>
+                                                ))}
+                                          </div>
+
+                                          <form onSubmit={handleSubmit(onSubmit)}>
+
+                                                {/* Name */}
+                                                <div className="mb-3">
+                                                      <label className="auth-label">Full Name</label>
+                                                      <div className="input-icon-wrap">
+                                                            <i className="bi bi-person input-icon"></i>
+                                                            <input
+                                                                  {...register("name", { required: "The name field is required" })}
+                                                                  type="text"
+                                                                  className={`form-control auth-input ${errors.name ? "is-invalid" : ""}`}
+                                                                  placeholder="Your full name"
+                                                            />
+                                                            {errors.name && <p className="invalid-feedback">{errors.name.message}</p>}
+                                                      </div>
                                                 </div>
 
-
-                                                <div className='mb-3'>
-                                                      <label className='form-label' htmlFor="email">Email</label>
-                                                      <input
-                                                            {...register("email",
-                                                                  {
+                                                {/* Email */}
+                                                <div className="mb-3">
+                                                      <label className="auth-label">Email Address</label>
+                                                      <div className="input-icon-wrap">
+                                                            <i className="bi bi-envelope input-icon"></i>
+                                                            <input
+                                                                  {...register("email", {
                                                                         required: "The email field is required",
                                                                         pattern: {
                                                                               value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
                                                                               message: "Invalid email address"
                                                                         }
-                                                                  })
-                                                            }
-                                                            type="text"
-                                                            className={`form-control ${errors.email && "is-invalid"}`}
-                                                            placeholder='Email' />
-                                                      {
-                                                            errors.email && <p className='invalid-feedback'>{errors.email.message}</p>
-                                                      }
-
+                                                                  })}
+                                                                  type="text"
+                                                                  className={`form-control auth-input ${errors.email ? "is-invalid" : ""}`}
+                                                                  placeholder="you@example.com"
+                                                            />
+                                                            {errors.email && <p className="invalid-feedback">{errors.email.message}</p>}
+                                                      </div>
                                                 </div>
 
-                                                <div className='mb-3'>
-                                                      <label className='form-label' htmlFor="password">Password</label>
-                                                      <input
-                                                            {...register("password", { required: "The password field is required" })}
-                                                            type="password"
-                                                            className={`form-control ${errors.password && "is-invalid"}`}
-                                                            placeholder='Password' />
-                                                      {
-                                                            errors.password && <p className='invalid-feedback'>{errors.password.message}</p>
-                                                      }
+                                                {/* Password */}
+                                                <div className="mb-4">
+                                                      <label className="auth-label">Password</label>
+                                                      <div className="input-icon-wrap">
+                                                            <i className="bi bi-lock input-icon"></i>
+                                                            <input
+                                                                  {...register("password", { required: "The password field is required" })}
+                                                                  type="password"
+                                                                  className={`form-control auth-input ${errors.password ? "is-invalid" : ""}`}
+                                                                  placeholder="Create a strong password"
+                                                            />
+                                                            {errors.password && <p className="invalid-feedback">{errors.password.message}</p>}
+                                                      </div>
                                                 </div>
 
-                                                <div>
-                                                      <button className='btn btn-primary w-100'>Register</button>
-                                                </div>
+                                                <button type="submit" className="btn btn-auth">
+                                                      Create Account <i className="bi bi-arrow-right ms-1"></i>
+                                                </button>
+                                          </form>
 
-                                                <div className='d-flex justify-content-center py-3'>
-                                                      Already have account? &nbsp;<Link className='text-secondary' to={`/account/login`}> Login</Link>
-                                                </div>
-                                          </div>
+                                          <p className="auth-footer-text">
+                                                Already have an account? <Link to="/account/login">Sign in</Link>
+                                          </p>
                                     </div>
-                              </form>
+
+                              </div>
                         </div>
                   </div>
             </Layout>

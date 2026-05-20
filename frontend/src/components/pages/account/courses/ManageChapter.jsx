@@ -208,7 +208,7 @@ function ManageChapter({ course, params }) {
                                                                                                             </div>
                                                                                                             <div className="col-md-5 text-end">
                                                                                                                   {
-                                                                                                                        lesson.duration > 0 && <small className='fw-bold text-muted me-2'>20 Min</small>
+                                                                                                                        lesson?.duration > 0 && <small className='fw-bold text-muted me-2'>{lesson.duration} Min</small>
                                                                                                                   }
                                                                                                                   {
                                                                                                                         lesson.is_free_preview == "yes" && <div className="badge bg-success">Preview</div>

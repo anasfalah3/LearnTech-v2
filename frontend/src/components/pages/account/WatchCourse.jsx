@@ -1,12 +1,10 @@
-import Layout from "../../common/Layout";
-import Accordion from 'react-bootstrap/Accordion';
-import { MdSlowMotionVideo } from "react-icons/md";
-import { IoMdCheckmarkCircleOutline } from "react-icons/io";
-import ProgressBar from 'react-bootstrap/ProgressBar';
 import { useEffect, useState } from "react";
-import { apiUrl, token } from "../../common/Config";
 import { Link, useParams } from "react-router-dom";
-import ReactPlayer from 'react-player';
+import Layout from "../../common/Layout";
+import { apiUrl, token } from "../../common/Config";
+import { toast } from "react-hot-toast";
+import ReactPlayer from "react-player";
+
 import {
     MediaController,
     MediaControlBar,
@@ -20,197 +18,302 @@ import {
     MediaMuteButton,
     MediaFullscreenButton,
 } from "media-chrome/react";
-import { toast } from 'react-hot-toast'
 
 function WatchCourse() {
     const [course, setCourse] = useState({});
-    const [activeLesson, setactiveLesson] = useState(null);
-    const [completedLessons, setCompletedLesson] = useState([]);
+    const [activeLesson, setActiveLesson] = useState(null);
+    const [completedLessons, setCompletedLessons] = useState([]);
     const [progress, setProgress] = useState(0);
+    const [openChapter, setOpenChapter] = useState(0);
+    const [sidebarOpen, setSidebarOpen] = useState(true);
+
     const params = useParams();
 
+    // Fetch Course
     const fetchCourse = async () => {
         await fetch(`${apiUrl}/enroll/${params.id}`, {
             method: "GET",
             headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-                'Authorization': `Bearer ${token}`
+                "Content-Type": "application/json",
+                Accept: "application/json",
+                Authorization: `Bearer ${token}`,
             },
         })
-            .then(res => res.json())
-            .then(result => {
-                console.log(result)
+            .then((res) => res.json())
+            .then((result) => {
                 if (result.status == 200) {
                     setCourse(result.data);
-                    setactiveLesson(result.activeLesson);
-                    setCompletedLesson(result.completedLessons);
+                    setActiveLesson(result.activeLesson);
+                    setCompletedLessons(result.completedLessons);
                     setProgress(result.progress);
-                } else {
-                    console.log("somthing went wrong")
                 }
-            })
-    }
+            });
+    };
 
+    // Show Lesson
     const showLesson = async (lesson) => {
-        setactiveLesson(lesson)
+        setActiveLesson(lesson);
+
         const data = {
             course_id: params.id,
             lesson_id: lesson.id,
-            chapter_id: lesson.chapter_id
-        }
+            chapter_id: lesson.chapter_id,
+        };
+
         await fetch(`${apiUrl}/save-activity`, {
             method: "POST",
             headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-                'Authorization': `Bearer ${token}`
+                "Content-Type": "application/json",
+                Accept: "application/json",
+                Authorization: `Bearer ${token}`,
             },
-            body: JSON.stringify(data)
-        })
-            .then(res => res.json())
-            .then(result => {
-                console.log(result)
-                if (result.status == 200) {
-                    console.log(result.message)
-                } else {
-                    console.log("somthing went wrong")
-                }
-            })
-    }
-    const markAsComplete = async (activeLesson) => {
+            body: JSON.stringify(data),
+        });
+    };
+
+    // Mark Complete
+    const markAsComplete = async (lesson) => {
         const data = {
             course_id: params.id,
-            lesson_id: activeLesson.id,
-            chapter_id: activeLesson.chapter_id
-        }
+            lesson_id: lesson.id,
+            chapter_id: lesson.chapter_id,
+        };
+
         await fetch(`${apiUrl}/mark-as-complete`, {
             method: "POST",
             headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-                'Authorization': `Bearer ${token}`
+                "Content-Type": "application/json",
+                Accept: "application/json",
+                Authorization: `Bearer ${token}`,
             },
-            body: JSON.stringify(data)
+            body: JSON.stringify(data),
         })
-            .then(res => res.json())
-            .then(result => {
-                console.log(result)
+            .then((res) => res.json())
+            .then((result) => {
                 if (result.status == 200) {
-                    setCompletedLesson(result.completedLessons);
+                    setCompletedLessons(result.completedLessons);
                     setProgress(result.progress);
                     toast.success(result.message);
-                } else {
-                    console.log("somthing went wrong")
                 }
-            })
-    }
+            });
+    };
+
     useEffect(() => {
         fetchCourse();
-    }, [])
+    }, []);
+
+    const isCompleted = (id) => {
+        return completedLessons?.includes(id);
+    };
+
+    const totalLessons =
+        course.chapters?.reduce(
+            (acc, chapter) => acc + chapter.lessons.length,
+            0
+        ) || 0;
+
     return (
         <Layout>
-            {
-                course &&
 
-                <section className='section-5 my-5'>
-                    <div className='container'>
-                        <div className='row'>
-                            <div className='col-md-8'>
-                                {
-                                    activeLesson &&
-                                    <>
-                                        <div className='video'>
-                                            <MediaController
-                                                style={{
-                                                    width: "100%",
-                                                    aspectRatio: "16/9",
-                                                }}
-                                            >
-                                                <ReactPlayer
-                                                    slot="media"
-                                                    src={activeLesson.video_url}
-                                                    controls={false}
-                                                    style={{
-                                                        width: "100%",
-                                                        height: "100%",
-                                                        "--controls": "none",
-                                                    }}
-                                                ></ReactPlayer>
-                                                <MediaControlBar>
-                                                    <MediaPlayButton />
-                                                    <MediaSeekBackwardButton seekOffset={10} />
-                                                    <MediaSeekForwardButton seekOffset={10} />
-                                                    <MediaTimeRange />
-                                                    <MediaTimeDisplay showDuration />
-                                                    <MediaMuteButton />
-                                                    <MediaVolumeRange />
-                                                    <MediaPlaybackRateButton />
-                                                    <MediaFullscreenButton />
-                                                </MediaControlBar>
-                                            </MediaController>
-                                        </div>
-                                        <div className='meta-content'>
-                                            <div className='d-flex justify-content-between align-items-center border-bottom pb-2 mb-3 pt-1'>
-                                                <h3 className='pt-2'>{activeLesson.title}</h3>
-                                                <div>
-                                                    <Link onClick={() => markAsComplete(activeLesson)} className={`${completedLessons && completedLessons.includes(activeLesson.id) ? "disabled" : ''} btn btn-primary px-3`}>
-                                                        Mark as complete <IoMdCheckmarkCircleOutline size={20} /> </Link>
-                                                </div>
-                                            </div>
-                                            <div dangerouslySetInnerHTML={{ __html: activeLesson.description }}>
-                                            </div>
-                                        </div>
-                                    </>
-                                }
-                            </div>
-                            <div className='col-md-4'>
-                                <div className='card rounded-0'>
-                                    <div className='card-body'>
-                                        <div className='h6'>
-                                            <strong>{course.title}</strong>
-                                        </div>
-                                        <div className='py-2'>
-                                            <ProgressBar now={progress} />
-                                            <div className='pt-2'>
-                                                {progress}% complete
-                                            </div>
-                                        </div>
-                                        <Accordion flush>
-                                            {
-                                                course.chapters && course.chapters.map((chapter, index) => {
-                                                    return (
-                                                        <Accordion.Item eventKey={index} key={index}>
-                                                            <Accordion.Header>{chapter.title}</Accordion.Header>
-                                                            <Accordion.Body className='pt-2 pb-0 ps-0'>
-                                                                <ul className='lessons mb-0'>
-                                                                    {
-                                                                        chapter.lessons && chapter.lessons.map((lesson, index) => {
-                                                                            return (
-                                                                                <li className='pb-2' key={index}>
-                                                                                    <Link className={`${completedLessons && completedLessons.includes(lesson.id) ? "text-success text-decoration-line-through" : ''}`} onClick={() => showLesson(lesson)}>
-                                                                                        <MdSlowMotionVideo size={20} /> {lesson.title}
-                                                                                    </Link>
-                                                                                </li>
-                                                                            )
-                                                                        })
-                                                                    }
-                                                                </ul>
-                                                            </Accordion.Body>
-                                                        </Accordion.Item>
-                                                    )
-                                                })
-                                            }
-                                        </Accordion>
+            {/* TOPBAR */}
+            <div className="watch-topbar">
+                <Link to="/" className="topbar-brand">
+                    LearnTech
+                </Link>
+
+                <div className="topbar-title">{course.title}</div>
+
+                <button
+                    className="topbar-toggle"
+                    onClick={() => setSidebarOpen(!sidebarOpen)}
+                >
+                    {sidebarOpen ? "Hide" : "Show"} Content
+                </button>
+            </div>
+
+            <div className="watch-layout">
+
+                {/* MAIN */}
+                <div className="watch-main">
+
+                    {/* VIDEO */}
+                    <div className="video-wrap">
+                        {activeLesson && (
+                            <MediaController
+                                style={{
+                                    width: "100%",
+                                    aspectRatio: "16/9",
+                                }}
+                            >
+                                <ReactPlayer
+                                    slot="media"
+                                    src={activeLesson.video_url}
+                                    controls={false}
+                                    style={{
+                                        width: "100%",
+                                        height: "100%",
+                                    }}
+                                />
+
+                                <MediaControlBar>
+                                    <MediaPlayButton />
+                                    <MediaSeekBackwardButton seekOffset={10} />
+                                    <MediaSeekForwardButton seekOffset={10} />
+                                    <MediaTimeRange />
+                                    <MediaTimeDisplay showDuration />
+                                    <MediaMuteButton />
+                                    <MediaVolumeRange />
+                                    <MediaPlaybackRateButton />
+                                    <MediaFullscreenButton />
+                                </MediaControlBar>
+                            </MediaController>
+                        )}
+                    </div>
+
+                    {/* LESSON */}
+                    {activeLesson && (
+                        <div className="lesson-meta">
+
+                            <div className="d-flex justify-content-between align-items-start gap-3 flex-wrap">
+
+                                <div>
+                                    <div
+                                        style={{
+                                            fontSize: "12px",
+                                            color: "var(--primary)",
+                                            fontWeight: 700,
+                                            textTransform: "uppercase",
+                                            marginBottom: "6px",
+                                        }}
+                                    >
+                                        {
+                                            course.chapters?.find((chapter) =>
+                                                chapter.lessons.some(
+                                                    (lesson) => lesson.id === activeLesson.id
+                                                )
+                                            )?.title
+                                        }
                                     </div>
+
+                                    <h2 className="lesson-title">
+                                        {activeLesson.title}
+                                    </h2>
                                 </div>
+
+                                <button
+                                    onClick={() => markAsComplete(activeLesson)}
+                                    disabled={isCompleted(activeLesson.id)}
+                                    className={`btn-complete ${isCompleted(activeLesson.id) ? "done" : ""
+                                        }`}
+                                >
+                                    {isCompleted(activeLesson.id)
+                                        ? "Completed"
+                                        : "Mark as Complete"}
+                                </button>
                             </div>
+
+                            <div
+                                className="lesson-desc"
+                                dangerouslySetInnerHTML={{
+                                    __html: activeLesson.description,
+                                }}
+                            />
+                        </div>
+                    )}
+                </div>
+
+                {/* SIDEBAR */}
+                <div
+                    className={`watch-sidebar ${sidebarOpen ? "" : "collapsed"
+                        }`}
+                >
+
+                    {/* HEADER */}
+                    <div className="sidebar-header">
+                        <div className="sidebar-course-title">
+                            {course.title}
+                        </div>
+
+                        <div className="progress-track">
+                            <div
+                                className="progress-fill"
+                                style={{ width: `${progress}%` }}
+                            ></div>
+                        </div>
+
+                        <div className="progress-label">
+                            <span>{progress}% complete</span>
+                            <span>
+                                {completedLessons.length}/{totalLessons}
+                            </span>
                         </div>
                     </div>
-                </section>
-            }
+
+                    {/* CHAPTERS */}
+                    {course.chapters?.map((chapter, ci) => (
+                        <div className="chapter-item" key={ci}>
+
+                            <div
+                                className={`chapter-header ${openChapter === ci ? "open" : ""
+                                    }`}
+                                onClick={() =>
+                                    setOpenChapter(openChapter === ci ? null : ci)
+                                }
+                            >
+                                <div className="chapter-name">
+                                    {chapter.title}
+                                </div>
+
+                                <i
+                                    className={`bi bi-chevron-${openChapter === ci ? "up" : "down"
+                                        }`}
+                                ></i>
+                            </div>
+
+                            {openChapter === ci && (
+                                <div>
+                                    {chapter.lessons?.map((lesson, li) => {
+                                        const done = isCompleted(lesson.id);
+                                        const current = activeLesson?.id === lesson.id;
+
+                                        return (
+                                            <div
+                                                key={li}
+                                                className={`lesson-item ${current ? "active" : ""
+                                                    }`}
+                                                onClick={() => showLesson(lesson)}
+                                            >
+
+                                                <div
+                                                    className={`lesson-check ${done
+                                                        ? "done"
+                                                        : current
+                                                            ? "current"
+                                                            : ""
+                                                        }`}
+                                                >
+                                                    {done ? (
+                                                        <i className="bi bi-check"></i>
+                                                    ) : current ? (
+                                                        <i className="bi bi-play-fill"></i>
+                                                    ) : null}
+                                                </div>
+
+                                                <div className="lesson-title-item">
+                                                    {lesson.title}
+                                                </div>
+
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            )}
+                        </div>
+                    ))}
+                </div>
+            </div>
         </Layout>
-    )
+    );
 }
 
-export default WatchCourse
+export default WatchCourse;

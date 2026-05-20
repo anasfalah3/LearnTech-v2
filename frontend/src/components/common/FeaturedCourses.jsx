@@ -29,11 +29,17 @@ function FeaturedCourses() {
             fetchFeaturedCourses();
       }, [])
       return (
-            <section className='section-3 my-5'>
+            <section id="courses" className="py-5" style={{ background: "var(--surface)" }}>
                   <div className="container">
-                        <div className='section-title py-3  mt-4'>
-                              <h2 className='h3'>Featured Courses</h2>
-                              <p>Discover courses designed to help you excel in your professional and personal growth.</p>
+                        <div className="d-flex justify-content-between align-items-end mb-4 flex-wrap gap-2">
+                              <div>
+                                    <div className="section-label">Hand-picked</div>
+                                    <h2 className="fw-bold mb-1">Featured Courses</h2>
+                                    <p className="text-muted mb-0">Expert-led courses to kick-start your learning journey.</p>
+                              </div>
+                              <a href="/courses" className="btn btn-outline-primary btn-sm px-4" style={{ borderRadius: 100 }}>
+                                    View All <i className="bi bi-arrow-right ms-1"></i>
+                              </a>
                         </div>
                         <div className="row gy-4">
                               {

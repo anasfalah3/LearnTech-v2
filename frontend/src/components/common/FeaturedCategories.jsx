@@ -29,28 +29,36 @@ function FeaturedCategories() {
             fetchCategories();
       }, [])
 
+
       return (
-            <section className='section-2'>
-                  <div className="container">
-                        <div className='section-title py-3  mt-4'>
-                              <h2 className='h3'>Explore Categories</h2>
-                              <p>Discover categories designed to help you excel in your professional and personal growth.</p>
-                        </div>
-                        <div className='row gy-3'>
-                              {
-                                    categories && categories.map((category, index) => {
+            <>
+                  <section id="categories" className="py-5" style={{ background: "#fff" }}>
+                        <div className="container">
+                              <div className="mb-4">
+                                    <div className="section-label">Browse</div>
+                                    <h2 className="fw-bold mb-1">Explore Top Categories</h2>
+                                    <p className="text-muted">Find courses in areas that matter to your career and interests.</p>
+                              </div>
+                              <div className="row g-3">
+                                    {categories.map((cat, i) => {
+                                          const colors = ["#ede9fe", "#e0f2fe", "#dcfce7", "#fef9c3", "#fce7f3", "#e0f2fe", "#f3e8ff", "#dbeafe"];
+                                          const iconColors = ["#7c3aed", "#0284c7", "#16a34a", "#ca8a04", "#db2777", "#0284c7", "#9333ea", "#2563eb"];
                                           return (
-                                                <div className='col-6 col-md-6 col-lg-3' key={index}>
-                                                      <div className='card shadow border-0'>
-                                                            <div className='card-body'><Link href="">{category.name}</Link></div>
+                                                <Link className="col-6 col-md-4 col-lg-3" key={i} to={`/courses?category=${cat.id}`}>
+                                                      <div className="cat-card">
+                                                            <div className="cat-icon" style={{ background: colors[i % colors.length] }}>
+                                                                  <i className="bi bi-tag" style={{ color: iconColors[i % iconColors.length] }}></i>
+                                                            </div>
+                                                            <div className="fw-semibold mb-1" style={{ fontSize: "0.9rem" }}>{cat.name}</div>
+                                                            <div className="text-muted" style={{ fontSize: "0.78rem" }}>{cat.count}</div>
                                                       </div>
-                                                </div>
-                                          )
-                                    })
-                              }
+                                                </Link>
+                                          );
+                                    })}
+                              </div>
                         </div>
-                  </div>
-            </section>
+                  </section>
+            </>
       )
 }
 
