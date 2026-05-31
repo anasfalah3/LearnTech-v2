@@ -100,6 +100,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::get('/courses', [AdminController::class, 'getAllCourses']);
         Route::get('/courses/{id}', [AdminController::class, 'getCourseDetails']);
         Route::put('/courses/{id}/status', [AdminController::class, 'updateCourseStatus']);
+        Route::put('/courses/{id}/featured', [AdminController::class, 'updateCourseFeatured']);
         Route::delete('/courses/{id}', [AdminController::class, 'destroyCourse']);
     });
 });

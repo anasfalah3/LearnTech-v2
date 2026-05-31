@@ -361,7 +361,7 @@ class AdminController extends Controller
         }
 
         $courses = Course::with(['category', 'level', 'language', 'enrollments'])
-            ->select('id', 'title', 'category_id', 'level_id', 'language_id', 'status', 'created_at')
+            ->select('id', 'title', 'category_id', 'level_id', 'language_id', 'status', 'is_featured', 'created_at')
             ->paginate($request->get('per_page', 10));
 
         return response()->json([
@@ -405,6 +405,45 @@ class AdminController extends Controller
         return response()->json([
             'status' => 200,
             'message' => 'Course status updated successfully',
+            'data' => $course
+        ], 200);
+    }
+
+    /**
+     * Update course featured flag
+     */
+    public function updateCourseFeatured(Request $request, $id)
+    {
+        $adminCheck = $this->checkAdmin();
+        if ($adminCheck) {
+            return $adminCheck;
+        }
+
+        $course = Course::find($id);
+        if (!$course) {
+            return response()->json([
+                'status' => 404,
+                'message' => 'Course not found'
+            ], 404);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'is_featured' => 'required|in:yes,no'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 400,
+                'errors' => $validator->errors()
+            ], 400);
+        }
+
+        $course->is_featured = $request->is_featured;
+        $course->save();
+
+        return response()->json([
+            'status' => 200,
+            'message' => 'Course featured flag updated successfully',
             'data' => $course
         ], 200);
     }
@@ -476,7 +515,7 @@ class AdminController extends Controller
             'total_categories' => Category::count(),
             'total_levels' => Level::count(),
             'total_admins' => User::where('role', 'admin')->count(),
-            'published_courses' => Course::where('status', 'published')->count(),
+            'published_courses' => Course::where('status', '1')->count(),
             'recent_users' => User::latest()->take(5)->get(['id', 'name', 'email', 'role', 'created_at']),
         ];
 

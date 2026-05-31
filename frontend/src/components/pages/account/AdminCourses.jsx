@@ -77,6 +77,28 @@ function AdminCourses() {
             }
       };
 
+      const handleFeaturedToggle = async (courseId, isFeatured) => {
+            try {
+                  const response = await fetch(`${apiUrl}/admin/courses/${courseId}/featured`, {
+                        method: 'PUT',
+                        headers: {
+                              'Authorization': `Bearer ${token}`,
+                              'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ is_featured: isFeatured })
+                  });
+
+                  const result = await response.json();
+                  if (result.status === 200) {
+                        toast.success(result.message);
+                        fetchCourses(currentPage);
+                  }
+            } catch (error) {
+                  toast.error('Failed to update featured status');
+                  console.error('Error:', error);
+            }
+      };
+
       const getStatusBadgeClass = (status) => {
             switch (status) {
                   case 'published':
@@ -91,7 +113,10 @@ function AdminCourses() {
       };
 
       useEffect(() => {
-            fetchCourses(currentPage);
+            const loadCourses = () => {
+                  fetchCourses(currentPage);
+            };
+            loadCourses();
       }, [currentPage]);
       return (
             <div className="admin-section">
@@ -113,6 +138,7 @@ function AdminCourses() {
                                                       <th>Level</th>
                                                       <th>Language</th>
                                                       <th>Status</th>
+                                                      <th>Featured</th>
                                                       <th>Enrollments</th>
                                                       <th>Created</th>
                                                       <th>Actions</th>
@@ -143,6 +169,11 @@ function AdminCourses() {
                                                                         </span>
                                                                   )}
                                                             </td>
+                                                            <td>
+                                                                  <span className={`badge ${course.is_featured === 'yes' ? 'bg-info' : 'bg-secondary'}`}>
+                                                                        {course.is_featured === 'yes' ? 'Yes' : 'No'}
+                                                                  </span>
+                                                            </td>
                                                             <td>{course.enrollments?.length || 0}</td>
                                                             <td>{new Date(course.created_at).toLocaleDateString()}</td>
                                                             <td>
@@ -171,6 +202,12 @@ function AdminCourses() {
                                                                                     }}
                                                                               >
                                                                                     Edit
+                                                                              </button>
+                                                                              <button
+                                                                                    className="btn btn-sm btn-outline-info me-2"
+                                                                                    onClick={() => handleFeaturedToggle(course.id, course.is_featured === 'yes' ? 'no' : 'yes')}
+                                                                              >
+                                                                                    {course.is_featured === 'yes' ? 'Remove Featured' : 'Set Featured'}
                                                                               </button>
                                                                               <button
                                                                                     className="btn btn-sm btn-danger"
