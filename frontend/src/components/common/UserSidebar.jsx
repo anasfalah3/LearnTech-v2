@@ -7,7 +7,7 @@ function UserSidebar() {
       const currentPath = window.location.pathname;
 
       const navItems = [
-            { to: "/account/dashboard", icon: "bi-grid", label: "Dashboard" },
+            // { to: "/account/dashboard", icon: "bi-grid", label: "Dashboard" },
             { to: "/account/profile", icon: "bi-person", label: "Profile" },
             { to: "/account/my-learning", icon: "bi-mortarboard", label: "My Learning" },
             { to: "/account/my-courses", icon: "bi-display", label: "My Courses" },

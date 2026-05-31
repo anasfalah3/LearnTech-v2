@@ -1,9 +1,10 @@
-import { useState } from 'react'
+// import { useState } from 'react'
+import { Link } from 'react-router-dom';
 
 function NewsLetter() {
-      const [email, setEmail] = useState("");
+      // const [email, setEmail] = useState("");
       return (
-            <section className="py-5" style={{ background: "var(--surface)" }}>
+            <section className="py-5 px-6" style={{ background: "var(--surface)" }}>
                   <div className="container">
                         <div className="cta-section text-center">
                               <div className="section-label" style={{ color: "#bfdbfe", borderColor: "rgba(191,219,254,0.3)", background: "rgba(255,255,255,0.1)" }}>
@@ -14,21 +15,14 @@ function NewsLetter() {
                                     Subscribe to our newsletter to get the latest updates and exclusive offers
                               </p>
                               <div className="d-flex justify-content-center gap-2 flex-wrap">
-                                    <input
-                                          type="email"
-                                          className="form-control"
-                                          placeholder="Enter your email"
-                                          value={email}
-                                          onChange={(e) => setEmail(e.target.value)}
-                                          style={{ maxWidth: 300, borderRadius: 100, border: "none" }}
-                                    />
-                                    <button className="btn btn-dark px-4 fw-semibold" style={{ borderRadius: 100 }}>
-                                          Subscribe <i className="bi bi-arrow-right ms-1"></i>
-                                    </button>
+
+                                    <Link to="/account/login" className="btn btn-light fw-bold px-4" style={{ borderRadius: 100, color: "var(--primary)" }}>
+                                          Get Started Free
+                                    </Link>
                               </div>
-                              <p className="mt-3" style={{ color: "#93c5fd", fontSize: "0.8rem" }}>
+                              {/* <p className="mt-3" style={{ color: "#93c5fd", fontSize: "0.8rem" }}>
                                     <i className="bi bi-shield-check me-1"></i>Your data is safe. We never spam.
-                              </p>
+                              </p> */}
                         </div>
                   </div>
             </section>

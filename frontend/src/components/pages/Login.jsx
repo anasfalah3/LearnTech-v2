@@ -31,7 +31,7 @@ function Login() {
                               }
                               localStorage.setItem("userInfoLearnTech", JSON.stringify(userInfo));
                               login(userInfo);
-                              navigate('/account/dashboard')
+                              navigate('/account/profile')
                         } else {
                               toast.error(result.message);
                         }

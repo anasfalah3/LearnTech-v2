@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom'
 const links = [
       {
             title: "Company", links: [
-                  { name: "About Us", url: "#" },
+                  { name: "About Us", url: "/about" },
                   { name: "Careers", url: "#" },
             ]
       },
@@ -12,19 +12,19 @@ const links = [
                   { name: "Categories", url: "/courses" },
             ]
       },
-      {
-            title: "Support", links: [
-                  { name: "Contact Us", url: "#" },
-                  { name: "Privacy Policy", url: "#" },
-                  { name: "Terms", url: "#" }
-            ]
-      },
+      // {
+      //       title: "Support", links: [
+      //             { name: "Contact Us", url: "#" },
+      //             { name: "Privacy Policy", url: "#" },
+      //             { name: "Terms", url: "#" }
+      //       ]
+      // },
 ]
 function Footer() {
       return (
             <footer className="py-5">
                   <div className="container">
-                        <div className="row g-4 mb-4">
+                        <div className="row g-4 mb-4 justify-content-lg-between">
                               <div className="col-lg-4">
                                     <div className="footer-brand mb-2"><i className="bi bi-mortarboard-fill me-2" style={{ color: "#6366f1" }}></i>LearnTech</div>
                                     <p style={{ fontSize: "0.88rem", maxWidth: 280 }}>Empowering learners worldwide with accessible, high-quality education resources.</p>
@@ -37,7 +37,7 @@ function Footer() {
                                     </div>
                               </div>
                               {links.map((col) => (
-                                    <div className="col-6 col-md-4 col-lg-2" key={col.title}>
+                                    <div className="col-4 col-md-4 col-lg-2" key={col.title}>
                                           <h6 className="text-white fw-semibold mb-3">{col.title}</h6>
                                           <ul className="list-unstyled d-flex flex-column gap-2">
                                                 {col.links.map((link) => (

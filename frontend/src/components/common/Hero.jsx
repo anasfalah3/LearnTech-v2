@@ -11,7 +11,7 @@ function Hero() {
                                           <div className="hero-badge"><i className="bi bi-lightning-charge-fill me-1"></i>Over 8,500 courses available</div>
                                           <h1 className="display-4 fw-bold mb-3">Learn Anytime,<br /><span style={{ color: "#a5b4fc" }}>Anywhere.</span></h1>
                                           <p className="lead mb-4" style={{ maxWidth: 480 }}>
-                                                Join 50,000+ students on LearnHub. Explore expert-led courses to level up your skills and unlock new opportunities.
+                                                Join 50,000+ students on LearnTech. Explore expert-led courses to level up your skills and unlock new opportunities.
                                           </p>
                                           <div className="d-flex flex-wrap gap-3">
                                                 <Link to="/courses" className="btn btn-hero-primary">Explore Courses</Link>

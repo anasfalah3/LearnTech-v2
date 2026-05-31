@@ -14,11 +14,11 @@ function Header() {
                         <Navbar.Collapse id="navbarScroll" className="collapse navbar-collapse">
                               <Nav className="me-auto my-2 my-lg-0 navbar-nav mx-auto gap-1" navbarScroll>
                                     <Nav.Link href="/courses" className="nav-item nav-link fw-medium">All Courses</Nav.Link>
-                                    <Nav.Link href="#" className="nav-item nav-link fw-medium">About</Nav.Link>
-                                    <Nav.Link href="#" className="nav-item nav-link fw-medium">Contact</Nav.Link>
+                                    <Nav.Link href="/about" className="nav-item nav-link fw-medium">About</Nav.Link>
+                                    {/* <Nav.Link href="#" className="nav-item nav-link fw-medium">Contact</Nav.Link> */}
                               </Nav>
                               <div className="d-flex gap-2">
-                                    <Link to='/account/dashboard' className="btn btn-primary btn-sm px-3" style={{ borderRadius: 100 }}>My Account</Link>
+                                    <Link to='/account/profile' className="btn btn-primary btn-sm px-3" style={{ borderRadius: 100 }}>My Account</Link>
                               </div>
                         </Navbar.Collapse>
                   </Container>
