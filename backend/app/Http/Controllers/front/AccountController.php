@@ -35,6 +35,7 @@ class AccountController extends Controller
         $user->name = $request->name;
         $user->email = $request->email;
         $user->password = Hash::make($request->password);
+        $user->role = 'user'; // Set default role
         $user->save();
 
         // $token = $user->createToken('auth_token')->plainTextToken;
@@ -68,7 +69,7 @@ class AccountController extends Controller
                 'name' => $user->name,
                 'email' => $user->email,
                 'id' => Auth::user()->id,
-
+                'role' => $user->role,
             ], 200);
         } else {
             return response()->json([

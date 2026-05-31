@@ -13,6 +13,11 @@ function UserSidebar() {
             { to: "/account/my-courses", icon: "bi-display", label: "My Courses" },
             { to: "/account/change-password", icon: "bi-shield-lock", label: "Change Password" },
       ];
+
+      // Add Admin Dashboard link if user is admin
+      if (user && user.role == 'admin') {
+            navItems.push({ to: "/account/admin-dashboard", icon: "bi-tools", label: "Admin Dashboard" });
+      }
       return (
             <div className="user-sidebar">
                   {/* User avatar block */}

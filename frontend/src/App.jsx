@@ -9,8 +9,10 @@ import MyLearning from './components/pages/account/MyLearning'
 import WatchCourse from './components/pages/account/WatchCourse'
 import ChangePassword from './components/pages/account/ChangePassword'
 import Dashboard from './components/pages/account/Dashboard'
+import AdminDashboard from './components/pages/account/AdminDashboard'
 import { Toaster } from 'react-hot-toast'
 import RequireAuth from './components/common/RequireAuth'
+import AdminRequireAuth from './components/common/AdminRequireAuth'
 import CreateCourse from './components/pages/account/courses/CreateCourse'
 import EditCourse from './components/pages/account/courses/EditCourse'
 import EditLesson from './components/pages/account/courses/EditLesson'
@@ -57,6 +59,11 @@ function App() {
             <RequireAuth>
               <Dashboard />
             </RequireAuth>
+          } />
+          <Route path="/account/admin-dashboard" element={
+            <AdminRequireAuth>
+              <AdminDashboard />
+            </AdminRequireAuth>
           } />
           <Route path="/account/courses/create" element={
             <RequireAuth>

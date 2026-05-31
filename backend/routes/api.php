@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\front\AccountController;
+use App\Http\Controllers\front\AdminController;
 use App\Http\Controllers\front\CourseController;
 use App\Http\Controllers\front\OutcomeController;
 use App\Http\Controllers\front\RequirementController;
@@ -72,4 +73,33 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/fetch-user', [AccountController::class, 'fetchUser']);
     Route::post('/update-user', [AccountController::class, 'updatehUser']);
     Route::post('/update-password', [AccountController::class, 'updatePassword']);
+
+    // Admin Routes
+    Route::prefix('/admin')->group(function () {
+        // Dashboard statistics
+        Route::get('/dashboard-stats', [AdminController::class, 'getDashboardStats']);
+
+        // Categories management
+        Route::get('/categories', [AdminController::class, 'getAllCategories']);
+        Route::post('/categories', [AdminController::class, 'storeCategory']);
+        Route::put('/categories/{id}', [AdminController::class, 'updateCategory']);
+        Route::delete('/categories/{id}', [AdminController::class, 'destroyCategory']);
+
+        // Levels management
+        Route::get('/levels', [AdminController::class, 'getAllLevels']);
+        Route::post('/levels', [AdminController::class, 'storeLevel']);
+        Route::put('/levels/{id}', [AdminController::class, 'updateLevel']);
+        Route::delete('/levels/{id}', [AdminController::class, 'destroyLevel']);
+
+        // Users management
+        Route::get('/users', [AdminController::class, 'getAllUsers']);
+        Route::put('/users/{id}/role', [AdminController::class, 'updateUserRole']);
+        Route::delete('/users/{id}', [AdminController::class, 'destroyUser']);
+
+        // Courses management
+        Route::get('/courses', [AdminController::class, 'getAllCourses']);
+        Route::get('/courses/{id}', [AdminController::class, 'getCourseDetails']);
+        Route::put('/courses/{id}/status', [AdminController::class, 'updateCourseStatus']);
+        Route::delete('/courses/{id}', [AdminController::class, 'destroyCourse']);
+    });
 });

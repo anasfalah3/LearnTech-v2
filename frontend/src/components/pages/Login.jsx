@@ -26,7 +26,8 @@ function Login() {
                                     name: result.name,
                                     email: result.email,
                                     id: result.id,
-                                    token: result.token
+                                    token: result.token,
+                                    role: result.role
                               }
                               localStorage.setItem("userInfoLearnTech", JSON.stringify(userInfo));
                               login(userInfo);
