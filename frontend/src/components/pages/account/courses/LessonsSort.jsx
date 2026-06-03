@@ -29,7 +29,6 @@ function LessonsSort({ lessonsData, showLessonSortModal, handleCloseLessonSortMo
             })
                   .then(res => res.json())
                   .then(result => {
-                        console.log(result)
                         if (result.status == 200) {
                               setChapters({ type: "UPDATE_CHAPTER", payload: result.chapter });
                               toast.success(result.message);

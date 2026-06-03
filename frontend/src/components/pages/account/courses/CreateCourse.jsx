@@ -20,7 +20,6 @@ function CreateCourse() {
             })
                   .then(res => res.json())
                   .then(result => {
-                        console.log(result)
                         if (result.status == 200) {
                               navigate('/account/courses/edit/' + result.data.id)
                               toast.success(result.message);

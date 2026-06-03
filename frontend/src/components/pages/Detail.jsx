@@ -44,7 +44,6 @@ function Detail() {
                   .then(res => res.json())
                   .then(result => {
                         setLoading(false);
-                        console.log(result.data);
                         if (result.status == 200) {
                               setCourse(result.data);
                         } else {
@@ -73,7 +72,6 @@ function Detail() {
                         }
                   })
                   .then(({ status, data }) => {
-                        console.log(data);
                         if (status == 200) {
                               toast.success(data.message)
                         } else if (status == 401) {

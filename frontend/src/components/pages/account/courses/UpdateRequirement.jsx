@@ -22,7 +22,6 @@ function UpdateRequirement({ showRequirement, handleClose, requirements, setRequ
                   .then(res => res.json())
                   .then(result => {
                         setLoading(false);
-                        console.log(result)
                         if (result.status == 200) {
                               const updatedRequirements = requirements.map(requirement => requirement.id == result.data.id ? { ...requirement, text: result.data.text } : requirement);
                               setRequirements(updatedRequirements);

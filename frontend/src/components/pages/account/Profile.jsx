@@ -26,7 +26,6 @@ function Profile() {
                   .then(res => res.json())
                   .then(result => {
                         setLoading(false);
-                        console.log(result)
                         if (result.status == 200) {
                               setUser(result.data);
                               reset({
@@ -52,7 +51,6 @@ function Profile() {
             })
                   .then(res => res.json())
                   .then(result => {
-                        console.log(result)
                         if (result.status == 200) {
                               toast.success(result.message);
                         } else {

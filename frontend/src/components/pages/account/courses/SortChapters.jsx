@@ -30,7 +30,6 @@ function SortChapters({ showChapterSortModal, handleCloseChapterSortModal, cours
             })
                   .then(res => res.json())
                   .then(result => {
-                        console.log(result)
                         if (result.status == 200) {
                               setChapters({ type: "SET_CHAPTERS", payload: result.chapters });
                               toast.success(result.message);

@@ -22,7 +22,6 @@ function UpdateOutcome({ showOutcome, handleClose, outcomes, setOutcomes, outcom
                   .then(res => res.json())
                   .then(result => {
                         setLoading(false);
-                        console.log(result)
                         if (result.status == 200) {
                               const updatedOutcomes = outcomes.map(outcome => outcome.id == result.data.id ? { ...outcome, text: result.data.text } : outcome);
                               setOutcomes(updatedOutcomes);

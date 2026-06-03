@@ -17,7 +17,6 @@ function FeaturedCourses() {
                   .then(res => res.json())
                   .then(result => {
                         if (result.status == 200) {
-                              console.log(result.data);
                               setCourses(result.data);
                         } else {
                               console.log("something went wrong");

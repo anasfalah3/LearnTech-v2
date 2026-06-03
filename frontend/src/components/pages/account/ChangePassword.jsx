@@ -27,7 +27,6 @@ function ChangePassword() {
                   .then(res => res.json())
                   .then(result => {
                         setLoading(false);
-                        console.log(result)
                         if (result.status == 200) {
                               toast.success(result.message);
                               reset();

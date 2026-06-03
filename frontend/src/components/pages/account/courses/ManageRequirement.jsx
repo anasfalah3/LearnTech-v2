@@ -40,7 +40,6 @@ function ManageRequirement() {
             })
                   .then(res => res.json())
                   .then(result => {
-                        console.log(result)
                         if (result.status == 200) {
                               toast.success(result.message);
                         } else {
@@ -70,7 +69,6 @@ function ManageRequirement() {
                   .then(res => res.json())
                   .then(result => {
                         setLoading(false);
-                        console.log(result)
                         if (result.status == 200) {
                               const newRequirement = [...requirements, result.data];
                               setRequirements(newRequirement);
@@ -94,8 +92,6 @@ function ManageRequirement() {
                   .then(res => res.json())
                   .then(result => {
                         setLoading(false);
-                        console.log("requirements : ")
-                        console.log(result)
                         if (result.status == 200) {
                               setRequirements(result.data);
                         } else {
@@ -117,7 +113,6 @@ function ManageRequirement() {
                         .then(res => res.json())
                         .then(result => {
                               setLoading(false);
-                              console.log(result)
                               if (result.status == 200) {
                                     const newRequirements = requirements.filter(requirement => requirement.id != id);
                                     setRequirements(newRequirements);

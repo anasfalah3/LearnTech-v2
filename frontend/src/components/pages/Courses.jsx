@@ -89,7 +89,6 @@ function Courses() {
                   .then(res => res.json())
                   .then(result => {
                         if (result.status == 200) {
-                              console.log(result.data);
                               setCourses(result.data);
                         } else {
                               console.log("something went wrong");
@@ -110,7 +109,6 @@ function Courses() {
                   .then(result => {
                         setLoading(false);
                         if (result.status == 200) {
-                              console.log(result.data);
                               setCategories(result.data);
                         } else {
                               console.log("something went wrong");
@@ -129,7 +127,6 @@ function Courses() {
                   .then(res => res.json())
                   .then(result => {
                         if (result.status == 200) {
-                              console.log(result.data);
                               setLevels(result.data);
                         } else {
                               console.log("something went wrong");
@@ -148,7 +145,6 @@ function Courses() {
                   .then(res => res.json())
                   .then(result => {
                         if (result.status == 200) {
-                              console.log(result.data);
                               setLanguages(result.data);
                         } else {
                               console.log("something went wrong");

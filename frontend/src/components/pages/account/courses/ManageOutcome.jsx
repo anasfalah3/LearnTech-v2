@@ -42,7 +42,6 @@ function ManageOutcome() {
             })
                   .then(res => res.json())
                   .then(result => {
-                        console.log(result)
                         if (result.status == 200) {
                               toast.success(result.message);
                         } else {
@@ -72,7 +71,6 @@ function ManageOutcome() {
                   .then(res => res.json())
                   .then(result => {
                         setLoading(false);
-                        console.log(result)
                         if (result.status == 200) {
                               const newOutcome = [...outcomes, result.data];
                               setOutcomes(newOutcome);
@@ -96,8 +94,6 @@ function ManageOutcome() {
                   .then(res => res.json())
                   .then(result => {
                         setLoading(false);
-                        console.log("outcomes : ")
-                        console.log(result)
                         if (result.status == 200) {
                               setOutcomes(result.data);
                         } else {
@@ -119,7 +115,6 @@ function ManageOutcome() {
                         .then(res => res.json())
                         .then(result => {
                               setLoading(false);
-                              console.log(result)
                               if (result.status == 200) {
                                     const newOutcomes = outcomes.filter(outcome => outcome.id != id);
                                     setOutcomes(newOutcomes);

@@ -26,7 +26,6 @@ function EditCourse() {
                   })
                         .then(res => res.json())
                         .then(result => {
-                              console.log(result)
                               if (result.status == 200) {
                                     reset({
                                           title: result.data.title,
@@ -61,7 +60,6 @@ function EditCourse() {
                   .then(res => res.json())
                   .then(result => {
                         setLoading(false);
-                        console.log(result)
                         if (result.status == 200) {
                               toast.success(result.message);
                         } else {
@@ -84,7 +82,6 @@ function EditCourse() {
             })
                   .then(res => res.json())
                   .then(result => {
-                        console.log(result)
                         if (result.status == 200) {
                               setCategories(result.categories);
                               setLanguages(result.languages);
@@ -108,7 +105,6 @@ function EditCourse() {
             })
                   .then(res => res.json())
                   .then(result => {
-                        console.log(result)
                         if (result.status == 200) {
                               toast.success(result.message)
                               setCourse({ ...course, status: result.course.status });

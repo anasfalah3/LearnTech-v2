@@ -90,7 +90,6 @@ function ManageChapter({ course, params }) {
                   .then(res => res.json())
                   .then(result => {
                         setLoading(false);
-                        console.log(result)
                         if (result.status == 200) {
                               // const newOutcome = [...outcomes, result.data];
                               // setOutcomes(newOutcome);
@@ -114,7 +113,6 @@ function ManageChapter({ course, params }) {
                   })
                         .then(res => res.json())
                         .then(result => {
-                              console.log(result)
                               if (result.status == 200) {
                                     setChapters({ type: "DELETE_CHAPTER", payload: id });
                                     toast.success(result.message);
@@ -136,7 +134,6 @@ function ManageChapter({ course, params }) {
                   })
                         .then(res => res.json())
                         .then(result => {
-                              console.log(result)
                               if (result.status == 200) {
                                     setChapters({ type: "UPDATE_CHAPTER", payload: result.chapter });
                                     toast.success(result.message);

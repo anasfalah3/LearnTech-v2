@@ -23,7 +23,6 @@ function UpdateChapter({ chapterData, showChapter, handleClose, setChapters }) {
                   .then(res => res.json())
                   .then(result => {
                         setLoading(false);
-                        console.log(result)
                         if (result.status == 200) {
                               setChapters({ type: "UPDATE_CHAPTER", payload: result.data });
                               toast.success(result.message);

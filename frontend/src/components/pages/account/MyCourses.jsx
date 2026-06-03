@@ -19,7 +19,6 @@ function MyCourses() {
             })
                   .then(res => res.json())
                   .then(result => {
-                        console.log(result)
                         if (result.status == 200) {
                               setCourses(result.courses);
                         } else {
@@ -40,7 +39,6 @@ function MyCourses() {
                   })
                         .then(res => res.json())
                         .then(result => {
-                              console.log(result)
                               if (result.status == 200) {
                                     const newCourses = courses.filter(course => course.id != id);
                                     setCourses(newCourses);

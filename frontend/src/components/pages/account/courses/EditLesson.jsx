@@ -48,7 +48,6 @@ function EditLesson({ placeholder }) {
                               console.log("something went wrong");
                         }
                   })
-            // console.log(data)
       }
       useEffect(() => {
             fetch(`${apiUrl}/chapters?course_id=${params.courseId}`, {
@@ -62,7 +61,6 @@ function EditLesson({ placeholder }) {
                   .then(res => res.json())
                   .then(result => {
                         if (result.status == 200) {
-                              console.log(result);
                               setChapters(result.data)
                         } else {
                               console.log("something went wrong");
@@ -79,7 +77,6 @@ function EditLesson({ placeholder }) {
                   .then(res => res.json())
                   .then(result => {
                         if (result.status == 200) {
-                              console.log(result);
                               setLesson(result.data)
                               reset({
                                     lesson: result.data.title,

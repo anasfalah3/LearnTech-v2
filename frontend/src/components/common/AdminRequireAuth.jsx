@@ -11,10 +11,8 @@ function AdminRequireAuth({ children }) {
       useEffect(() => {
             if (!user) {
                   navigate('/account/login', { replace: true })
-                  // console.log("No user, redirecting to login")
             } else if (user.role !== 'admin') {
                   navigate('/', { replace: true })
-                  // console.log("User is not admin, redirecting to home")
             }
       }, [user, navigate])
 

@@ -34,7 +34,6 @@ function LeaveRating() {
             })
                   .then(res => res.json())
                   .then(result => {
-                        console.log(result)
                         if (result.status == 200) {
                               toast.success(result.message);
                               reset();
@@ -56,7 +55,6 @@ function LeaveRating() {
             })
                   .then(res => res.json())
                   .then(result => {
-                        console.log(result)
                         if (result.status == 200) {
                               setCourse(result.data);
                         } else {
