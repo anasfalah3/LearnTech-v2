@@ -285,7 +285,7 @@ function Detail() {
                                                                   )}
                                                             </div>
                                                             <p className="text-muted mb-3" style={{ fontSize: "0.78rem" }}>
-                                                                  <i className="bi bi-clock-history me-1"></i>Offer ends in 2 days
+                                                                  <i className="bi bi-clock-history me-1"></i> Special Offre No Paiment Required This is Beta Version of the Platform
                                                             </p>
 
                                                             {/* Enroll button */}
