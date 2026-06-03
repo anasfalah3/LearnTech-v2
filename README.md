@@ -1,8 +1,7 @@
 # LearnTech-v2
 
-```markdown
 ![Homepage Preview](preview/HomePage.png)
-```
+
 
 A small online learning platform (backend: Laravel, frontend: Vite/React).
 
